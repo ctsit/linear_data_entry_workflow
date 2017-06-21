@@ -35,75 +35,74 @@ return function($project_id) {
 ?>
 
   <script>
+	$('document').ready(function() {
 
-	//create rfio_dashboard object to avoid namespace collisions
-	var rfio_dashboard = {};
+    var json = <?php echo json_encode($project_json) ?>;
+    var completedForms = <?php echo json_encode($completed_forms) ?>;
 
-	rfio_dashboard.json = <?php echo json_encode($project_json) ?>;
-  rfio_dashboard.completedForms = <?php echo json_encode($completed_forms) ?>;
-
-  /*converts a pageName on a link to the corresponding form's complete_status
-  field name*/
-  rfio_dashboard.pageToFormComplete = function(pageName) {
-    return pageName + '_complete';
-  }
-
-	rfio_dashboard.disableForm = function(cell) {
-	    cell.style.pointerEvents = 'none';
-	    cell.style.opacity = '.1';
-	}
-
-	rfio_dashboard.enableForm = function(cell) {
-	    cell.style.pointerEvents = 'auto';
-	    cell.style.opacity = '1';
-	}
-
-  rfio_dashboard.getQueryString = function(url) {
-    url = decodeURI(url);
-    return url.match(/\?.+/)[0];
-  }
-
-  rfio_dashboard.getQueryParameters = function(url) {
-    var parameters = {};
-    var queryString = this.getQueryString(url);
-    var reg = /([^?&=]+)=?([^&]*)/g;
-    var keyValuePair;
-    while(keyValuePair = reg.exec(queryString)) {
-      parameters[keyValuePair[1]] = keyValuePair[2];
+    /*converts a pageName on a link to the corresponding form's complete_status
+    field name*/
+    function pageToFormComplete(pageName) {
+      return pageName + '_complete';
     }
-    return parameters;
-  }
 
-  rfio_dashboard.run = function(){
-    var $rows = $('#record_status_table tbody tr');
+    function disableForm(cell) {
+        cell.style.pointerEvents = 'none';
+        cell.style.opacity = '.1';
+    }
 
-    for(var i = 0; i < $rows.length; i++) {
-      var previousFormCompleted = true;
+    function enableForm(cell) {
+        cell.style.pointerEvents = 'auto';
+        cell.style.opacity = '1';
+    }
 
-      //start at 1 to avoid disabling Record ID column
-      for(var j = 1; j < $rows[i].cells.length; j++) {
+    function getQueryString(url) {
+      url = decodeURI(url);
+      return url.match(/\?.+/)[0];
+    }
 
-        //if last form was incomplete disable every form after it
-        if(!previousFormCompleted) {
-          this.disableForm($rows[i].cells[j]);
-          continue;
-        }
+    function getQueryParameters(url) {
+      var parameters = {};
+      var queryString = getQueryString(url);
+      var reg = /([^?&=]+)=?([^&]*)/g;
+      var keyValuePair;
+      while(keyValuePair = reg.exec(queryString)) {
+        parameters[keyValuePair[1]] = keyValuePair[2];
+      }
+      return parameters;
+    }
 
-        var link = $rows[i].cells[j].getElementsByTagName('a')[0].href;
-        var param = this.getQueryParameters(link);
+    function run(){
+      var $rows = $('#record_status_table tbody tr');
 
-        if(this.completedForms[param.id][param.event_id] === undefined ||
-           this.completedForms[param.id][param.event_id][this.pageToFormComplete(param.page)] === undefined ||
-           this.completedForms[param.id][param.event_id][this.pageToFormComplete(param.page)] !== "2") {
-             previousFormCompleted = false;
-             continue;
+      for(var i = 0; i < $rows.length; i++) {
+        var previousFormCompleted = true;
+
+        //start at 1 to avoid disabling Record ID column
+        for(var j = 1; j < $rows[i].cells.length; j++) {
+
+          //if last form was incomplete disable every form after it
+          if(!previousFormCompleted) {
+            disableForm($rows[i].cells[j]);
+            continue;
+          }
+
+          var link = $rows[i].cells[j].getElementsByTagName('a')[0].href;
+          var param = getQueryParameters(link);
+
+          if(completedForms[param.id][param.event_id] === undefined ||
+             completedForms[param.id][param.event_id][pageToFormComplete(param.page)] === undefined ||
+             completedForms[param.id][param.event_id][pageToFormComplete(param.page)] !== "2") {
+               previousFormCompleted = false;
+               continue;
+          }
         }
       }
     }
-  }
 
-	$('document').ready(function() {
-		rfio_dashboard.run();
+    //run the hook
+		run();
+
 	});
 
   </script>
