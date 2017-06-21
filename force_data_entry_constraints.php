@@ -1,15 +1,20 @@
-<?php // force_data_entry_constraints.php
+<?php
 return function ($project_id) {
-    global $Proj, $isMobileDevice;
+    global $Proj;
 
+    // Markup of required fields bullets list.
     $bullets = '';
+
+    // Selectors to search for empty required fields.
     $selectors = array();
 
+    // Getting required fields from form config.
     foreach ($Proj->metadata as $field_name => $field_info) {
         if (!$field_info['field_req']) {
             continue;
         }
 
+        // The bullets are hidden for default, since we do not know yet which ones are empty.
         $field_label = filter_tags(label_decode($field_info['element_label']));
         $bullets .= '<div class="req-bullet req-bullet--' . $field_name . '" style="margin-left: 1.5em; text-indent: -1em; display: none;"> &bull; ' . $field_label . '</div>';
 
@@ -22,6 +27,7 @@ return function ($project_id) {
 
     $selectors = implode(', ', $selectors);
 
+    // Printing required fields popup (hidden yet).
     print '
         <div id="preemptiveReqPopup" title="Some fields are required!" style="display:none;text-align:left;">
             <p>You did not provide a value for some fields that require a value. Please enter a value for the fields on this page that are listed below.</p>
@@ -31,22 +37,23 @@ return function ($project_id) {
 <script>
     var FORM_STATUS_COMPLETED = 2;
 
-    $('#submit-btn-saverecord, #submit-btn-savecontinue').each(function() {
-        $(this).data('onclick', this.onclick);
+    $(document).ready(function() {
+        var dataEntryFormValidate = function() {
+            var form_is_ok = true;
 
-        this.onclick = function(event) {
+            // Checking if form status is set as Complete.
             if ($('#questiontable select[name="<?php print $_GET['page'];  ?>_complete"]').val() == FORM_STATUS_COMPLETED) {
-                var form_is_complete = true;
-                var $req_fields = $('<?php print $selectors; ?>');
-
-                $req_fields.each(function() {
+                // Checking for empty required fields.
+                $('<?php print $selectors; ?>').each(function() {
                     if ($(this).val() === '') {
+                        // This required field is empty, so let's show up its bullet.
                         $('.req-bullet--' + $(this).attr('name')).show();
-                        form_is_complete = false;
+                        form_is_ok = false;
                     }
                 });
 
-                if (!form_is_complete) {
+                // If there is empty required fields, display popup.
+                if (!form_is_ok) {
                     $('#preemptiveReqPopup').dialog({
                         bgiframe: true,
                         modal: true,
@@ -54,14 +61,58 @@ return function ($project_id) {
                         open: function() {
                             fitDialog(this);
                         },
+                        close: function() {
+                            $('.req-bullet').hide();
+                        },
                     });
+                }
+            };
 
+            return form_is_ok;
+        }
+
+        // Handling submit buttons.
+        $('#submit-btn-saverecord, #submit-btn-savecontinue').each(function() {
+            // Storing onclick callback of the submit button.
+            $(this).data('onclick', this.onclick);
+
+            // Overriding onclick callback of submit buttons.
+            this.onclick = function(event) {
+                if (!dataEntryFormValidate()) {
                     return false;
                 }
-            }
 
-            $(this).data('onclick').call(this, event || window.event);
-        };
+                // Go ahead with normal procedure.
+                $(this).data('onclick').call(this, event || window.event);
+            };
+        });
+
+        // Handling 'Stay on Page' popup, which opens the door for wrong/incomplete submissions.
+        $('#stayOnPageReminderDialog').on('dialogopen', function(event, ui) {
+            var buttons = $(this).dialog('option', 'buttons');
+
+            for (var i = 0; i < buttons.length; i++) {
+                if (buttons[i].class == 'dataEntrySaveLeavePageBtn') {
+                    // Storing click callback of Save & Leave button.
+                    $(this).data('dataEntrySaveLeavePageBtn', buttons[i].click);
+
+                    // Overriding click callback of Save & Leave button.
+                    buttons[i].click = function () {
+                        if (!dataEntryFormValidate()) {
+                            return false;
+                        }
+
+                        // Go ahead with normal procedure.
+                        $(this).data('dataEntrySaveLeavePageBtn').call();
+                    };
+
+                    // Saving overriden button to popup.
+                    $(this).dialog('option', 'buttons', buttons);
+
+                    break;
+                }
+            };
+        });
     });
 </script>
 <?php
