@@ -42,6 +42,12 @@ return function($project_id) {
 	rfio_dashboard.json = <?php echo json_encode($project_json) ?>;
   rfio_dashboard.completedForms = <?php echo json_encode($completed_forms) ?>;
 
+  /*converts a pageName on a link to the corresponding form's complete_status
+  field name*/
+  rfio_dashboard.pageToFormComplete = function(pageName) {
+    return pageName + '_complete';
+  }
+
 	rfio_dashboard.disableForm = function(cell) {
 	    cell.style.pointerEvents = 'none';
 	    cell.style.opacity = '.1';
