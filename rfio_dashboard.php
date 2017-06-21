@@ -46,11 +46,6 @@ return function($project_id) {
         cell.style.opacity = '.1';
     }
 
-    function enableForm(cell) {
-        cell.style.pointerEvents = 'auto';
-        cell.style.opacity = '1';
-    }
-
     function getQueryString(url) {
       url = decodeURI(url);
       return url.match(/\?.+/)[0];
