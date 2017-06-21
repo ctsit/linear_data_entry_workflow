@@ -20,6 +20,18 @@ return function($project_id) {
 	$my_settings = $cps->getAttributeData($project_id, $my_extension_name);
 	$project_json = json_decode($my_settings, true);
 
+  //get form names used internally by REDCap
+  $forms = array_keys(REDCap::getInstrumentNames());
+
+  //use form names to contruct complete_status field names
+  foreach($forms as $index => $form_name) {
+    $forms[$index] = $form_name . '_complete';
+  }
+
+  /*request data as an array to get corresponding record ids and events with
+  complete forms */
+  $completed_forms = REDCap::getData($_GET['pid'], 'array', null, $forms);
+
 ?>
 
   <script>
@@ -28,6 +40,7 @@ return function($project_id) {
 	var rfio_dashboard = {};
 
 	rfio_dashboard.json = <?php echo json_encode($project_json) ?>;
+  rfio_dashboard.completedForms = <?php echo json_encode($completed_forms) ?>;
 
 	rfio_dashboard.disableForm = function(cell) {
 	    cell.style.pointerEvents = 'none';
