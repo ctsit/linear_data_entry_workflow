@@ -39,6 +39,11 @@ return function($project_id) {
 	    cell.style.opacity = '1';
 	}
 
+  rfio_dashboard.getQueryString = function(url) {
+    url = decodeURI(url);
+    return url.match(/\?.+/)[0];
+  }
+
   rfio_dashboard.run = function(){
 
   }
