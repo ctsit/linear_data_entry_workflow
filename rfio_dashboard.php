@@ -44,6 +44,17 @@ return function($project_id) {
     return url.match(/\?.+/)[0];
   }
 
+  rfio_dashboard.getQueryParameters = function(url) {
+    var parameters = {};
+    var queryString = this.getQueryString(url);
+    var reg = /([^?&=]+)=?([^&]*)/g;
+    var keyValuePair;
+    while(keyValuePair = reg.exec(queryString)) {
+      parameters[keyValuePair[1]] = keyValuePair[2];
+    }
+    return parameters;
+  }
+
   rfio_dashboard.run = function(){
 
   }
