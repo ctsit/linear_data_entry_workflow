@@ -75,7 +75,31 @@ return function($project_id) {
   }
 
   rfio_dashboard.run = function(){
+    var $rows = $('#record_status_table tbody tr');
 
+    for(var i = 0; i < $rows.length; i++) {
+      var previousFormCompleted = true;
+
+      //start at 1 to avoid disabling Record ID column
+      for(var j = 1; j < $rows[i].cells.length; j++) {
+
+        //if last form was incomplete disable every form after it
+        if(!previousFormCompleted) {
+          this.disableForm($rows[i].cells[j]);
+          continue;
+        }
+
+        var link = $rows[i].cells[j].getElementsByTagName('a')[0].href;
+        var param = this.getQueryParameters(link);
+
+        if(this.completedForms[param.id][param.event_id] === undefined ||
+           this.completedForms[param.id][param.event_id][this.pageToFormComplete(param.page)] === undefined ||
+           this.completedForms[param.id][param.event_id][this.pageToFormComplete(param.page)] !== "2") {
+             previousFormCompleted = false;
+             continue;
+        }
+      }
+    }
   }
 
 	$('document').ready(function() {
