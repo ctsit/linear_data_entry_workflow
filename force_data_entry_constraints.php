@@ -6,7 +6,7 @@ return function ($project_id) {
     $bullets = '';
 
     // Selectors to search for empty required fields.
-    $selectors = array();
+    $req_fields_selectors = array();
 
     // Getting required fields from form config.
     foreach ($Proj->metadata as $field_name => $field_info) {
@@ -18,14 +18,8 @@ return function ($project_id) {
         $field_label = filter_tags(label_decode($field_info['element_label']));
         $bullets .= '<div class="req-bullet req-bullet--' . $field_name . '" style="margin-left: 1.5em; text-indent: -1em; display: none;"> &bull; ' . $field_label . '</div>';
 
-        $selectors[] = '#questiontable ' . ($field_info['element_type'] == 'select' ? 'select' : 'input') . '[name="' . $field_name . '"]';
+        $req_fields_selectors[] = '#questiontable ' . ($field_info['element_type'] == 'select' ? 'select' : 'input') . '[name="' . $field_name . '"]';
     }
-
-    if (empty($selectors)) {
-        return;
-    }
-
-    $selectors = implode(', ', $selectors);
 
     // Printing required fields popup (hidden yet).
     print '
@@ -36,11 +30,16 @@ return function ($project_id) {
 ?>
 <script>
     var FORM_STATUS_COMPLETED = 2;
+    var FORM_ERROR_COLOR = 'rgb(255, 183, 190)';
 
     $(document).ready(function() {
         // Overriding message that says that wrong values are admissible.
         $('#valtext_divs #valtext_rangesoft2').text('You may wish to verify.');
 
+        // Selector to search for the required fields.
+        var req_fields_selector = '<?php print implode(', ', $req_fields_selectors); ?>';
+
+        // Form validation callback.
         var dataEntryFormValidate = function() {
             var form_is_ok = true;
 
@@ -49,42 +48,43 @@ return function ($project_id) {
                 return form_is_ok;
             }
 
-            // Checking for empty required fields.
-            $('<?php print $selectors; ?>').each(function() {
-                if ($(this).val() === '') {
-                    // This required field is empty, so let's show up its bullet.
-                    $('.req-bullet--' + $(this).attr('name')).show();
-                    form_is_ok = false;
+            // Let's execute the validation callback of each form element (e.g. checking for numbers out of range).
+            $('#questiontable input, #questiontable select').each(function() {
+                if (typeof this.onblur === 'function') {
+                    this.onblur.call(this);
+
+                    if ($(this).css('background-color') === FORM_ERROR_COLOR) {
+                        // We've got a validation error.
+                        form_is_ok = false;
+                        return false;
+                    }
                 }
             });
 
-            if (form_is_ok) {
-                // Since required fields are filled, so let's execute validation callbacks of all form elements.
-                $('#questiontable input, #questiontable select').each(function() {
-                    if (typeof this.onblur === 'function') {
-                        this.onblur.call(this);
-
-                        if ($(this).css('background-color') === 'rgb(255, 183, 190)') {
-                            // We've got a validation error.
-                            form_is_ok = false;
-                            return false;
-                        }
+            if (form_is_ok && req_fields_selector) {
+                // Looking for empty required fields.
+                $(req_fields_selector).each(function() {
+                    if ($(this).val() === '') {
+                        // This required field is empty, so let's show up its bullet.
+                        $('.req-bullet--' + $(this).attr('name')).show();
+                        form_is_ok = false;
                     }
                 });
-            }
-            else {
-                // If there is empty required fields, display popup.
-                $('#preemptiveReqPopup').dialog({
-                    bgiframe: true,
-                    modal: true,
-                    width: (isMobileDevice ? $(window).width() : 570),
-                    open: function() {
-                        fitDialog(this);
-                    },
-                    close: function() {
-                        $('.req-bullet').hide();
-                    },
-                });
+
+                if (!form_is_ok) {
+                    // We've got empty required fields, let's display popup.
+                    $('#preemptiveReqPopup').dialog({
+                        bgiframe: true,
+                        modal: true,
+                        width: (isMobileDevice ? $(window).width() : 570),
+                        open: function() {
+                            fitDialog(this);
+                        },
+                        close: function() {
+                            $('.req-bullet').hide();
+                        },
+                    });
+                }
             }
 
             return form_is_ok;
@@ -111,7 +111,7 @@ return function ($project_id) {
             var buttons = $(this).dialog('option', 'buttons');
 
             for (var i = 0; i < buttons.length; i++) {
-                if (buttons[i].class == 'dataEntrySaveLeavePageBtn') {
+                if (buttons[i].class === 'dataEntrySaveLeavePageBtn') {
                     // Storing click callback of Save & Leave button.
                     $(this).data('dataEntrySaveLeavePageBtn', buttons[i].click);
 
