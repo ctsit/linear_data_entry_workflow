@@ -38,35 +38,54 @@ return function ($project_id) {
     var FORM_STATUS_COMPLETED = 2;
 
     $(document).ready(function() {
+        // Overriding message that says that wrong values are admissible.
+        $('#valtext_divs #valtext_rangesoft2').text('You may wish to verify.');
+
         var dataEntryFormValidate = function() {
             var form_is_ok = true;
 
             // Checking if form status is set as Complete.
-            if ($('#questiontable select[name="<?php print $_GET['page'];  ?>_complete"]').val() == FORM_STATUS_COMPLETED) {
-                // Checking for empty required fields.
-                $('<?php print $selectors; ?>').each(function() {
-                    if ($(this).val() === '') {
-                        // This required field is empty, so let's show up its bullet.
-                        $('.req-bullet--' + $(this).attr('name')).show();
-                        form_is_ok = false;
+            if ($('#questiontable select[name="<?php print $_GET['page'];  ?>_complete"]').val() != FORM_STATUS_COMPLETED) {
+                return form_is_ok;
+            }
+
+            // Checking for empty required fields.
+            $('<?php print $selectors; ?>').each(function() {
+                if ($(this).val() === '') {
+                    // This required field is empty, so let's show up its bullet.
+                    $('.req-bullet--' + $(this).attr('name')).show();
+                    form_is_ok = false;
+                }
+            });
+
+            if (form_is_ok) {
+                // Since required fields are filled, so let's execute validation callbacks of all form elements.
+                $('#questiontable input, #questiontable select').each(function() {
+                    if (typeof this.onblur === 'function') {
+                        this.onblur.call(this);
+
+                        if ($(this).css('background-color') === 'rgb(255, 183, 190)') {
+                            // We've got a validation error.
+                            form_is_ok = false;
+                            return false;
+                        }
                     }
                 });
-
+            }
+            else {
                 // If there is empty required fields, display popup.
-                if (!form_is_ok) {
-                    $('#preemptiveReqPopup').dialog({
-                        bgiframe: true,
-                        modal: true,
-                        width: (isMobileDevice ? $(window).width() : 570),
-                        open: function() {
-                            fitDialog(this);
-                        },
-                        close: function() {
-                            $('.req-bullet').hide();
-                        },
-                    });
-                }
-            };
+                $('#preemptiveReqPopup').dialog({
+                    bgiframe: true,
+                    modal: true,
+                    width: (isMobileDevice ? $(window).width() : 570),
+                    open: function() {
+                        fitDialog(this);
+                    },
+                    close: function() {
+                        $('.req-bullet').hide();
+                    },
+                });
+            }
 
             return form_is_ok;
         }
