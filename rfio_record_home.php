@@ -61,7 +61,39 @@ return function($project_id) {
       }
 
       function run(){
+        var $rows = $('#event_grid_table tbody tr');
+        var previousFormCompleted = true;
 
+        //start at 1 to avoid disabling "Data Collection Instrument" column
+        for(var i = 1; i < $rows[0].cells.length; i++) {
+
+          //stop at $rows.length - 1 to avoid "delete all data on event" row
+          for(var j = 0; j < $rows.length - 1; j++) {
+
+            //check if cell has a link in it
+            if($rows[j].cells[i].getElementsByTagName('a')[0] === undefined) {
+              continue;
+            }
+
+            //if last form was incomplete disable every form after it
+            if(!previousFormCompleted) {
+              disableForm($rows[j].cells[i]);
+              continue;
+            }
+
+            var link = $rows[j].cells[i].getElementsByTagName('a')[0].href;
+            var param = getQueryParameters(link);
+
+            /*Need to check if event_id is defined in completedForms first because
+            js crashes if it has to check the property of an undefined variable*/
+            if(completedForms[param.id][param.event_id] === undefined ||
+               completedForms[param.id][param.event_id][pageToFormComplete(param.page)] === undefined ||
+               completedForms[param.id][param.event_id][pageToFormComplete(param.page)] !== "2") {
+                 previousFormCompleted = false;
+                 continue;
+            }
+          }
+        }
       }
 
     $('document').ready(function() {
