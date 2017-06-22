@@ -21,56 +21,32 @@
 		$cps_lib = new cps_lib();
 		$fieldsObj = $cps_lib->getAttributeData($pid, 'copy_values_from_previous_event_hook');
 		$fieldsArr = json_decode($fieldsObj)->current_medications;
-		//$fieldsArr = array("medication_name","indication");
 		$result = array();
-		global $conn;
-		$tableName = 'redcap_data';
-		$implodedArr = implode('\',\'',$fieldsArr);
-
-		/*
-			Code if custom methods are moved to a different file, prefill_data.php
-		*/
-		//$prefill_data = new prefill_data();
-		//$prefill_data->getFormData($project_id, $fieldsArr);
-		// $sql = "SELECT value from $tableName where field_name = 'medication_name'";
-		// if($stmt = $conn->prepare($sql)){
-		// 	$stmt->execute();
-		// 	$stmt->bind_result($col1);
-		// 	while ($stmt->fetch()) {
-		// 		echo '<script>alert("hi10");</script>';
-		// 	}
-		// }
-
-		/*
-			Use existing hook developer method to get redcap data.
-			Get data for required fields from this data.
-		*/
+		
 		$custom_data = REDCap::getData('json');
-
-		/*
-			Use custom method to get required data directly from DB.
-			Directly get data for required fields from the method.
-		*/
-		$sql = "SELECT field_name,value from $tableName where project_id = $project_id AND field_name IN ('$implodedArr') ORDER BY event_id DESC LIMIT ".count($fieldsArr);
-		echo $sql;
-		if($stmt = $conn->prepare($sql)){
-			$stmt->execute();
-			$stmt->bind_result($col1, $col2);
-			
-			while($stmt->fetch()){
-				$obj = new stdClass();
-				$obj->field_name = $col1;
-				$obj->value = $col2;
-				$result[] = $obj;
+		$encoded_data = json_decode($custom_data);
+		$max_event_id = 0;
+		foreach ($encoded_data as $item){
+			$unique_event_name = $item->redcap_event_name;
+			$event_id = REDCap::getEventIdFromUniqueEvent($unique_event_name);
+			if($event_id > $max_event_id){
+				$result = array();
+				foreach ($fieldsArr as $field){
+					if(isset($item->$field)){
+						$latest_data_obj = new stdClass();
+						$max_event_id = $event_id;
+						$latest_data_obj->field_name = $field;
+						$latest_data_obj->value = $item->$field;
+						$latest_data_obj->event_id = $event_id;
+						$result[] = $latest_data_obj;
+					}
+				}
 			}
 		}
 		$encoded_result = json_encode($result);
+		//print_r($result);
 	?>
-
 	<script type="text/javascript">
-		/*
-			Render auto fill data in fields.
-		*/
 		var phpArray = '<?php echo $encoded_result; ?>';
 		var resultArray = JSON.parse(phpArray);
 		for(var i=0;i<resultArray.length;i++){
