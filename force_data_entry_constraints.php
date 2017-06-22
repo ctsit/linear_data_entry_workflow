@@ -14,7 +14,7 @@ return function ($project_id) {
             continue;
         }
 
-        // The bullets are hidden for default, since we do not know yet which ones are empty.
+        // The bullets are hidden for default, since we do not know which ones will be empty.
         $field_label = filter_tags(label_decode($field_info['element_label']));
         $bullets .= '<div class="req-bullet req-bullet--' . $field_name . '" style="margin-left: 1.5em; text-indent: -1em; display: none;"> &bull; ' . $field_label . '</div>';
 
@@ -22,7 +22,7 @@ return function ($project_id) {
     }
 
     // Printing required fields popup (hidden yet).
-    print '
+    echo '
         <div id="preemptiveReqPopup" title="Some fields are required!" style="display:none;text-align:left;">
             <p>You did not provide a value for some fields that require a value. Please enter a value for the fields on this page that are listed below.</p>
             <div style="font-size:11px; font-family: tahoma, arial; font-weight: bold; padding: 3px 0;">' . $bullets . '</div>
@@ -37,18 +37,18 @@ return function ($project_id) {
         $('#valtext_divs #valtext_rangesoft2').text('You may wish to verify.');
 
         // Selector to search for the required fields.
-        var req_fields_selector = '<?php print implode(', ', $req_fields_selectors); ?>';
+        var req_fields_selector = '<?php echo implode(', ', $req_fields_selectors); ?>';
 
         // Form validation callback.
         var dataEntryFormValidate = function() {
             var form_is_ok = true;
 
-            // Checking if form status is set as Complete.
-            if ($('#questiontable select[name="<?php print $_GET['page'];  ?>_complete"]').val() != FORM_STATUS_COMPLETED) {
+            // Checking if form status is set as 'Complete'.
+            if ($('#questiontable select[name="<?php echo $_GET['page'];  ?>_complete"]').val() != FORM_STATUS_COMPLETED) {
                 return form_is_ok;
             }
 
-            // Let's execute the validation callback of each form element (e.g. checking for numbers out of range).
+            // Running the validation callback of each form element (e.g. checking for numbers out of range).
             $('#questiontable input, #questiontable select').each(function() {
                 if (typeof this.onblur === 'function') {
                     this.onblur.call(this);
