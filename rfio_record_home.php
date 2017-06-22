@@ -30,6 +30,9 @@ return function($project_id) {
   ?>
 
     <script>
+
+    $('document').ready(function() {
+
       var json = <?php echo json_encode($project_json) ?>;
       var completedForms = <?php echo json_encode($completed_forms) ?>;
 
@@ -96,9 +99,9 @@ return function($project_id) {
         }
       }
 
-    $('document').ready(function() {
       //run the hook
       run();
+
     });
 
     </script>
