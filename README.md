@@ -2,8 +2,12 @@
 
 This program facilitate the user to enter data in a linear work flow, and forces the user to enter all the mandatory fields in a form and also aids the user by auto fill repeated fields(like name, address from previous events). This is made possible with the help of following hooks.
 
-#### 1. Linear Work Flow hook
-#### 2. Fill Mandatory values hook
+#### 1. Linear work flow hook
+
+ 
+#### 2. Force fill mandatory values hook
+
+
 #### 3. Copy values from Previous Event Hook:
 
  While entering data in the redcap, as soon as the user opens a event, values for repeated fields like name, address etc are fetched from redcap apis and automatically filled in the form. If the redcap apis do not return any values then nothing will be filled. These autofilled fields can also be edited, so that if the users wishes to enter a new value, he or she can enter a new value and save the record. Then the record is saved with the new values and in this process the field values for previous events is not modified. Now, if the user enters a new event, where the repeated fields are present, the hook fetches the newly saved values for those fields for that record.
