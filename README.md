@@ -4,13 +4,13 @@ This program facilitate the user to enter data in a linear work flow, and forces
 
 #### 1. Linear work flow hook
 
- 
+
 #### 2. Force fill mandatory values hook
 
 
 #### 3. Copy values from Previous Event Hook:
 
- While entering data in the redcap, as soon as the user opens a event, values for repeated fields like name, address etc are fetched from redcap apis and automatically filled in the form. If the redcap apis do not return any values then nothing will be filled. These autofilled fields can also be edited, so that if the users wishes to enter a new value, he or she can enter a new value and save the record. Then the record is saved with the new values and in this process the field values for previous events is not modified. Now, if the user enters a new event, where the repeated fields are present, the hook fetches the newly saved values for those fields for that record.
+ While entering data in the redcap, as soon as the user opens a event, values for repeated fields like name, address etc are fetched from redcap apis and automatically filled in the form. If the redcap apis do not return any values then nothing will be filled. These autofilled fields can also be edited, so that if the users wishes to enter a new value, he or she can enter a new value and save the record. Then the record is saved with the new values and in this process the field values for previous events is not modified. Now, if the user enters a new event, where the repeated fields are present, the hook fetches tihe newly saved values for those fields for that record.
 The fields which are eligible for autofilling has to be preconfigured using custom_project_settings for that project.
 
 Sample entry for Custom Project Settings is:
@@ -55,4 +55,4 @@ When using the local test environment provided by UF CTS-IT's [redcap_deployment
 
 
 
-	fab instance:vagrant test_hook:redcap_data_entry_form,linear_data_entry_workflow/copy_values.php
+	fab instance:vagrant test_hook:redcap_data_entry_form,linear_data_entry_workflow/copy_values_from_previous_event.php
