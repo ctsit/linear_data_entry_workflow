@@ -20,7 +20,7 @@
 		*/
 		$cps_lib = new cps_lib();
 		$fieldsObj = $cps_lib->getAttributeData($pid, 'copy_values_from_previous_event_hook');
-		$fieldsArr = json_decode($fieldsObj)->current_medications;
+		$fieldsArr = json_decode($fieldsObj)->$form_name;
 		$result = array();
 		
 		$custom_data = REDCap::getData('json');
