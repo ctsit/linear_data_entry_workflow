@@ -12,7 +12,7 @@ The fields which are eligible for autofilling has to be preconfigured using cust
 
 Sample entry for Custom Project Settings is:
 
-```sh
+```
 attribute : "copy_values_from_previous_event_hook",
 value : "{
 	"demographics" : [
@@ -36,7 +36,7 @@ Make sure the attribute field is "copy_values_from_previous_event_hook" and valu
 ## Activating Hooks
 If you are deploying these hooks using UF CTS-IT's [redcap_deployment](https://github.com/ctsit/redcap_deployment) tools ([https://github.com/ctsit/redcap_deployment](https://github.com/ctsit/redcap_deployment)), you can activate these hooks with those tools as well.  If you had an environment named `vagrant` the activation would look like this:
 
-```sh
+```
 
 
 fab instance:vagrant activate_hook:redcap_data_entry_form,linear_data_entry_workflow/copy_values_from_previous_event.php
@@ -54,8 +54,8 @@ These hooks are designed to be activated as redcap_data_entry_form hook function
 
 When using the local test environment provided by UF CTS-IT's [redcap_deployment](https://github.com/ctsit/redcap_deployment) tools ([https://github.com/ctsit/redcap_deployment](https://github.com/ctsit/redcap_deployment)), you can use the deployment tools to configure these hooks for testing in the local VM.  If clone this repo as a child of the redcap_deployment repo, you can configure from the root of the redcap_deployment repo like this:
 
-	```
+```
 
-	
-    fab instance:vagrant test_hook:redcap_data_entry_form,linear_data_entry_workflow/copy_values.php
-    ```
+
+fab instance:vagrant test_hook:redcap_data_entry_form,linear_data_entry_workflow/copy_values.php
+```
