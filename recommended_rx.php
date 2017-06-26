@@ -46,12 +46,17 @@
             $target_field_name = '__chkn__' . $target_field_name;
         }
 
+        // Aux function.
+        $getFormElementSelector = function($element_type, $element_name) {
+            return '#questiontable ' . ($element_type == 'select' ? 'select' : 'input') . '[name="' . $element_name . '"]';
+        };
+
         // Setting up target info.
         $source_field_info = $Proj->metadata[$source_field_name];
         $mappings[$target_field_name] = array(
-            'selector' => '#questiontable ' . ($target_field_info['element_type'] == 'select' ? 'select' : 'input') . '[name="' . $target_field_name . '"]',
             'type' => $target_field_info['element_type'],
-            'source' => '#questiontable ' . ($source_field_info['element_type'] == 'select' ? 'select' : 'input') . '[name="' . $source_field_name . '"]',
+            'selector' => $getFormElementSelector($target_field_info['element_type'], $target_field_name),
+            'source' => $getFormElementSelector($source_field_info['element_type'], $source_field_name),
         );
     }
 
@@ -62,7 +67,6 @@
 ?>
 <script>
     $(document).ready(function() {
-        // Setting up useful vars.
         var mappings = <?php print json_encode($mappings); ?>;
 
         for (var target_name in mappings) {
@@ -73,7 +77,7 @@
                 continue;
             }
 
-            // Handling checkbox case.
+            // Setting up recommended values.
             switch (mapping.type) {
                 case 'checkbox':
                     $(mapping.selector + '[code="' + source_value + '"]').click();
