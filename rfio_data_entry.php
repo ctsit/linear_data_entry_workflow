@@ -53,21 +53,26 @@ return function($project_id) {
     }
 
     function run(){
+
+      // Get list of links to other forms from DOM
       var $links = $('.formMenuList a');
+      // Set previous form Completed to false initially
       var previousFormCompleted = false;
 
       // Disable links for forms that are not complete
       for(var i = 0; i < $links.length; i++) {
-        /* Links come in pairs. The same action is performed on each pair with
-        the following i, j, and k configuration.*/
+        /* Links come in pairs, made of p1 and p2. The p1 has the complete
+        status, the p2 has the form name. The same action is performed on each
+        pair with the following i, j, and k configuration.*/
         if(i%2 == 1){
-          var j = i-1;
-          var k = i-3;
+          j = i-1;
+          k = i-3;
         } else {
           j = i;
           k = i-2;
         }
 
+        // Prevent out of bounds (negative) array look-ups
         if(k >= 0) {
           if($links[k].title == 'Complete') {
             previousFormCompleted = true;
