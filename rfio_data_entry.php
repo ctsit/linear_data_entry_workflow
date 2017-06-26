@@ -1,19 +1,6 @@
 <?php
 return function($project_id) {
 
-	$URL = $_SERVER['REQUEST_URI'];
-  parse_str($_SERVER['QUERY_STRING'], $query);
-  $page_name = $query['page'];
-
-	// Check for correct page via the redcap_data_entry_form hook function
-
-	//Read configuration data from redcap_custom_project_settings data store
-	$my_extension_name = 'reveal_forms_in_order';
-	require_once "../../plugins/custom_project_settings/cps_lib.php";
-	$cps = new cps_lib();
-	$my_settings = $cps->getAttributeData($project_id, $my_extension_name);
-	$project_json = json_decode($my_settings, true);
-
   //get form names used internally by REDCap
   $forms = array_keys(REDCap::getInstrumentNames());
 
@@ -31,9 +18,7 @@ return function($project_id) {
   <script>
 	$('document').ready(function() {
 
-    var json = <?php echo json_encode($project_json); ?>;
     var completedForms = <?php echo json_encode($completed_forms); ?>;
-    var pageName = '<?php echo $page_name; ?>';
 
     /*converts a pageName on a link to the corresponding form's complete_status
     field name*/
