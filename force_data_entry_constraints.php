@@ -40,14 +40,9 @@ return function ($project_id) {
         // Selector to search for the required fields.
         var req_fields_selector = '<?php echo implode(', ', $req_fields_selectors); ?>';
 
-        // Form validation callback.
-        var dataEntryFormValidate = function() {
-            var form_is_ok = true;
-
-            // Checking if form status is set as 'Complete'.
-            if ($('#questiontable select[name="<?php echo $_GET['page'];  ?>_complete"]').val() != FORM_STATUS_COMPLETED) {
-                return form_is_ok;
-            }
+        // Function that calls validation callback of each element, if exists.
+        var elementsValidate = function() {
+            var validated = true;
 
             // Running the validation callback of each form element (e.g. checking for numbers out of range).
             $('#questiontable input, #questiontable select').each(function() {
@@ -56,39 +51,62 @@ return function ($project_id) {
 
                     if ($(this).css('background-color') === FORM_ERROR_COLOR) {
                         // We've got a validation error.
-                        form_is_ok = false;
+                        validated = false;
                         return false;
                     }
                 }
             });
 
-            if (form_is_ok && req_fields_selector) {
-                // Looking for empty required fields.
-                $(req_fields_selector).each(function() {
-                    if ($(this).val() === '') {
-                        // This required field is empty, so let's show up its bullet.
-                        $('.req-bullet--' + $(this).attr('name')).show();
-                        form_is_ok = false;
-                    }
-                });
+            return validated;
+        }
 
-                if (!form_is_ok) {
-                    // We've got empty required fields, let's display popup.
-                    $('#preemptiveReqPopup').dialog({
-                        bgiframe: true,
-                        modal: true,
-                        width: (isMobileDevice ? $(window).width() : 570),
-                        open: function() {
-                            fitDialog(this);
-                        },
-                        close: function() {
-                            $('.req-bullet').hide();
-                        },
-                    });
+        // Function that checks whether the required fields are filled, and displays a popup if required.
+        function requiredFieldsValidate(req_fields_selector, display_popup = true) {
+            validated = true;
+
+            // Looking for empty required fields.
+            $(req_fields_selector).each(function() {
+                if ($(this).val() === '') {
+                    // This required field is empty, so let's show up its bullet.
+                    $('.req-bullet--' + $(this).attr('name')).show();
+                    validated = false;
                 }
+            });
+
+            if (!validated && display_popup) {
+                // We've got empty required fields, let's display popup.
+                $('#preemptiveReqPopup').dialog({
+                    bgiframe: true,
+                    modal: true,
+                    width: (isMobileDevice ? $(window).width() : 570),
+                    open: function() {
+                        fitDialog(this);
+                    },
+                    close: function() {
+                        $('.req-bullet').hide();
+                    },
+                });
             }
 
-            return form_is_ok;
+            return validated;
+        }
+
+        // Form validation callback.
+        var formValidate = function(elements_validate = true, required_fields_validate = true) {
+            // Checking if form status is set as 'Complete'.
+            if ($('#questiontable select[name="<?php echo $_GET['page'];  ?>_complete"]').val() != FORM_STATUS_COMPLETED) {
+                return true;
+            }
+
+            if (elements_validate && !elementsValidate()) {
+                return false;
+            }
+
+            if (required_fields_validate && !requiredFieldsValidate(req_fields_selector)) {
+                return false;
+            }
+
+            return true;
         }
 
         // Handling submit buttons.
@@ -98,7 +116,7 @@ return function ($project_id) {
 
             // Overriding onclick callback of submit buttons.
             this.onclick = function(event) {
-                if (!dataEntryFormValidate()) {
+                if (!formValidate()) {
                     return false;
                 }
 
@@ -118,7 +136,7 @@ return function ($project_id) {
 
                     // Overriding click callback of Save & Leave button.
                     buttons[i].click = function () {
-                        if (!dataEntryFormValidate()) {
+                        if (!formValidate()) {
                             return false;
                         }
 
