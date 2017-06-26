@@ -1,5 +1,5 @@
 <?php return function($project_id) {
-    global $Proj, $question_by_section, $pageFields, $double_data_entry, $user_rights;
+    global $Proj, $question_by_section, $hidden_edit, $pageFields, $double_data_entry, $user_rights;
 
     if ($hidden_edit) {
         // This page has data.
