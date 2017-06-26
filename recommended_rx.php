@@ -19,52 +19,39 @@
 
     $mappings = array();
     foreach ($Proj->metadata as $target_field_name => $target_field_info) {
-        if ($target_field_info['element_type'] == 'checkbox') {
-            // TODO: Handle checkboxes.
-            continue;
-        }
-
         // Checking for action tags.
         if (empty($target_field_info['misc'])) {
             continue;
         }
 
         // Checking for action tag @DEFAULT.
-        $default_value = Form::getValueInQuotesActionTag($Proj->metadata[$target_field_name]['misc'], '@DEFAULT');
-        if (empty($default_value)) {
+        if (Form::getValueInQuotesActionTag($Proj->metadata[$target_field_name]['misc'], '@DEFAULT')) {
+            // We do not want to override @DEFAULT behavior.
             continue;
         }
 
-        // Checking for piping on action tag @DEFAULT.
-        preg_match('/\[(.*?)\]/', $default_value, $matches);
-        if (empty($matches)) {
+        // Checking for action tag @RECOMMENDED_RX.
+        $source_field_name = Form::getValueInQuotesActionTag($Proj->metadata[$target_field_name]['misc'], '@RECOMMENDED_RX');
+        if (empty($source_field_name)) {
             continue;
         }
 
-        // Skipping full string.
-        array_shift($matches);
-
-        // Setting up sources info.
-        $sources = array();
-        foreach ($matches as $source_field_name) {
-            if (empty($Proj->metadata[$source_field_name])) {
-                continue;
-            }
-
-            $source_field_info = $Proj->metadata[$source_field_name];
-            $sources[$source_field_name] = '#questiontable ' . ($source_field_info['element_type'] == 'select' ? 'select' : 'input') . '[name="' . $source_field_name . '"]';
+        // Checking if source field exists.
+        if (empty($Proj->metadata[$source_field_name])) {
+            continue;
         }
 
-        // Checking if form fields are being used as placeholders.
-        if (empty($sources)) {
-            continue;
+        // Handling checkbox case.
+        if ($target_field_info['element_type'] == 'checkbox') {
+            $target_field_name = '__chkn__' . $target_field_name;
         }
 
         // Setting up target info.
+        $source_field_info = $Proj->metadata[$source_field_name];
         $mappings[$target_field_name] = array(
             'selector' => '#questiontable ' . ($target_field_info['element_type'] == 'select' ? 'select' : 'input') . '[name="' . $target_field_name . '"]',
             'type' => $target_field_info['element_type'],
-            'sources' => $sources,
+            'source' => '#questiontable ' . ($source_field_info['element_type'] == 'select' ? 'select' : 'input') . '[name="' . $source_field_name . '"]',
         );
     }
 
@@ -77,51 +64,34 @@
     $(document).ready(function() {
         // Setting up useful vars.
         var mappings = <?php print json_encode($mappings); ?>;
-        var aux_replacement = '[aux_replacement_value]';
-        var missing_data_replacement = '______';
-        var missing_data_replacement_regex = new RegExp(missing_data_replacement, 'g');
 
         for (var target_name in mappings) {
-            // Getting mapping info.
             var mapping = mappings[target_name];
+            var source_value = $(mapping.source).val();
 
-            // Loading target element and value.
-            var $target = $(mapping.selector);
-            var target_value = $target.val();
+            if (typeof source_value === 'undefined') {
+                continue;
+            }
 
-            if (mapping.type === 'truefalse') {
-                // TODO.
+            // Handling checkbox case.
+            if (mapping.type === 'checkbox') {
+                $(mapping.selector + '[code="' + source_value + '"]').prop('checked', true);
             }
             else {
-                // Checking if the number of placeholders matches the number of sources.
-                var placeholders_count = (target_value.match(missing_data_replacement_regex) || []).length;
-                if (placeholders_count !== Object.keys(mapping.sources).length) {
-                    continue;
+                // Loading target element and source value.
+                var $target = $(mapping.selector);
+
+                // Setting target value.
+                $target.val(source_value);
+
+                switch (mapping.type) {
+                    case 'radio':
+                    case 'yesno':
+                    case 'truefalse':
+                        // Handling fields that required to be checked.
+                        $target.siblings().children('input[value="' + source_value + '"]').prop('checked', true);
+                        break;
                 }
-            }
-
-            for (var source_name in mapping.sources) {
-                var source_value = $(mapping.sources[source_name]).val();
-
-                // If the source value is empty, we must keep the placeholder.
-                // However, for loop reasons, let's Temporarily replace placeholder with an aux string.
-                // It will be restored later.
-                if (source_value === '') {
-                    source_value = aux_replacement;
-                }
-
-                target_value = target_value.replace(missing_data_replacement, source_value);
-            }
-
-            // Restoring placeholders.
-            target_value.replace(aux_replacement, missing_data_replacement_regex);
-
-            // Setting target value.
-            $target.val(target_value);
-
-            // Handling radios.
-            if (mapping.type === 'radio') {
-                $target.siblings().children('input[value="' + target_value + '"]').prop('checked', true);
             }
         }
     });
