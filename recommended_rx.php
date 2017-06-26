@@ -74,24 +74,19 @@
             }
 
             // Handling checkbox case.
-            if (mapping.type === 'checkbox') {
-                $(mapping.selector + '[code="' + source_value + '"]').prop('checked', true);
-            }
-            else {
-                // Loading target element and source value.
-                var $target = $(mapping.selector);
+            switch (mapping.type) {
+                case 'checkbox':
+                    $(mapping.selector + '[code="' + source_value + '"]').click();
+                    break;
+                case 'radio':
+                case 'yesno':
+                case 'truefalse':
+                    $(mapping.selector).val(source_value).siblings().children('input[value="' + source_value + '"]').click();
+                    break;
+                default:
+                    $(mapping.selector).val(source_value);
+                    break;
 
-                // Setting target value.
-                $target.val(source_value);
-
-                switch (mapping.type) {
-                    case 'radio':
-                    case 'yesno':
-                    case 'truefalse':
-                        // Handling fields that required to be checked.
-                        $target.siblings().children('input[value="' + source_value + '"]').prop('checked', true);
-                        break;
-                }
             }
         }
     });
