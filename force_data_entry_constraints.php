@@ -29,10 +29,11 @@ return function ($project_id) {
         </div>';
 ?>
 <script>
-    var FORM_STATUS_COMPLETED = 2;
-    var FORM_ERROR_COLOR = 'rgb(255, 183, 190)';
-
     $(document).ready(function() {
+        // Setting up constants.
+        const FORM_STATUS_COMPLETED = 2;
+        const FORM_ERROR_COLOR = 'rgb(255, 183, 190)';
+
         // Overriding message that says that wrong values are admissible.
         $('#valtext_divs #valtext_rangesoft2').text('You may wish to verify.');
 
