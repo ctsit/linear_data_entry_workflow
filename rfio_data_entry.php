@@ -81,7 +81,8 @@ return function($project_id) {
           }
         }
 
-        if($links[j].title !== 'Complete' && !previousFormCompleted) {
+        // Disable links to forms that aren't complete or in progress
+        if($links[j].title !== 'Complete' && !previousFormCompleted && i > 1) {
           disableLink($links[i]);
         }
       }
