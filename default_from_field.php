@@ -30,7 +30,7 @@
             continue;
         }
 
-        // Checking for action tag @RECOMMENDED_RX.
+        // Checking for action tag @DEFAULT_FROM_FIELD.
         $source_field_name = Form::getValueInQuotesActionTag($Proj->metadata[$target_field_name]['misc'], '@DEFAULT_FROM_FIELD');
         if (empty($source_field_name)) {
             continue;
