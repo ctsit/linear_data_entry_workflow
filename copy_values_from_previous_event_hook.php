@@ -10,7 +10,18 @@
 
 		$cps_lib = new cps_lib();
 		$fieldsObj = $cps_lib->getAttributeData($pid, 'copy_values_from_previous_event_hook');
-		$fieldsArr = json_decode($fieldsObj)->$form_name;
+		$parsed_fieldsobj = str_replace("'", '"', $fieldsObj);
+		$decoded_fieldsobj = json_decode($parsed_fieldsobj);
+		$fields_array = array();
+		$fieldsArr = json_encode($fields_array);
+		/*
+			Iterate over array of objects to get $form_name object and its value(fields).
+		*/
+		foreach ($decoded_fieldsobj as $key) {
+			if($key->form_name == $form_name){
+				$fieldsArr = $key->fields;
+			}
+		}
 
 		$result = array();
 		$custom_data = REDCap::getData('json');
