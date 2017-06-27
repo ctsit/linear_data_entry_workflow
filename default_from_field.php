@@ -30,8 +30,8 @@
             continue;
         }
 
-        // Checking for action tag @DEFAULT_FROM_FIELD.
-        $source_field_name = Form::getValueInQuotesActionTag($Proj->metadata[$target_field_name]['misc'], '@DEFAULT_FROM_FIELD');
+        // Checking for action tag @DEFAULT-FROM-FIELD.
+        $source_field_name = Form::getValueInQuotesActionTag($Proj->metadata[$target_field_name]['misc'], '@DEFAULT-FROM-FIELD');
         if (empty($source_field_name)) {
             continue;
         }
@@ -85,7 +85,7 @@
                 case 'radio':
                 case 'yesno':
                 case 'truefalse':
-                    $(mapping.selector).val(source_value).siblings().children('input[value="' + source_value + '"]').click();
+                    $(mapping.selector).siblings().children('input[value="' + source_value + '"]').click();
                     break;
                 default:
                     $(mapping.selector).val(source_value);

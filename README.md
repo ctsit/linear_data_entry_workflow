@@ -31,6 +31,10 @@ Sample entry for Custom Project Settings is:
 
  Note: Make sure the attribute field is "copy_values_from_previous_event_hook" and value field should be a valid json with keys being the form names not form titles and values is list of field names that needs to be auto filled by the Copy Values form Previous Event Hook.
 
+#### 4. @DEFAULT-FROM-FIELD Action Tag
+
+This extension provides a new action tag named @DEFAULT-FROM-FIELD. It allows users to set up a field's initial value from an existing field on the same form. This is useful when using hidden fields as source for visible fields - e.g. @DEFAULT-FROM-FIELD='hidden_first_name'.
+
 ## Testing
 
 ## Activating Hooks
