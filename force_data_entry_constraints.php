@@ -163,5 +163,5 @@ return function ($project_id) {
     });
 </script>
 <?php
-}
+};
 ?>
