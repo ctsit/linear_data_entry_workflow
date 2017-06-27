@@ -7,6 +7,8 @@ This program facilitate the user to enter data in a linear work flow, and forces
 
 #### 2. Force fill mandatory values hook
 
+This extension prevents users to save a record entry as Complete if it contains incomplete or inconsistent data, e.g. empty required fields, numbers out of range, etc.
+
 
 #### 3. Copy values from Previous Event Hook:
 

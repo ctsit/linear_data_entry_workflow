@@ -38,10 +38,12 @@ return function ($project_id) {
         $('#valtext_divs #valtext_rangesoft2').text('You may wish to verify.');
 
         // Selector to search for the required fields.
-        var req_fields_selector = '<?php echo implode(', ', $req_fields_selectors); ?>';
+        var required_fields_selector = '<?php echo implode(', ', $req_fields_selectors); ?>';
 
-        // Function that calls validation callback of each element, if exists.
-        var elementsValidate = function() {
+        /**
+         * Function that checks whether fields values are consistent.
+         */
+        function fieldsConsistencyValidate() {
             var validated = true;
 
             // Running the validation callback of each form element (e.g. checking for numbers out of range).
@@ -60,12 +62,15 @@ return function ($project_id) {
             return validated;
         }
 
-        // Function that checks whether the required fields are filled, and displays a popup if required.
-        function requiredFieldsValidate(req_fields_selector, display_popup = true) {
+        /**
+         * Function that checks whether the required fields are filled.
+         * Displays a popup if required and needed.
+         */
+        function requiredFieldsValidate(required_fields_selector, display_popup = true) {
             validated = true;
 
             // Looking for empty required fields.
-            $(req_fields_selector).each(function() {
+            $(required_fields_selector).each(function() {
                 if ($(this).val() === '') {
                     // This required field is empty, so let's show up its bullet.
                     $('.req-bullet--' + $(this).attr('name')).show();
@@ -91,18 +96,22 @@ return function ($project_id) {
             return validated;
         }
 
-        // Form validation callback.
-        var formValidate = function(elements_validate = true, required_fields_validate = true) {
+        /**
+         * Form validation callback.
+         */
+        function formValidate(required_fields_selector = '', elements_validate = true) {
             // Checking if form status is set as 'Complete'.
             if ($('#questiontable select[name="<?php echo $_GET['page'];  ?>_complete"]').val() != FORM_STATUS_COMPLETED) {
                 return true;
             }
 
-            if (elements_validate && !elementsValidate()) {
+            // Checking for inconsistent data.
+            if (elements_validate && !fieldsConsistencyValidate()) {
                 return false;
             }
 
-            if (required_fields_validate && !requiredFieldsValidate(req_fields_selector)) {
+            // Checking for empty required fields.
+            if (required_fields_selector && !requiredFieldsValidate(required_fields_selector)) {
                 return false;
             }
 
@@ -116,7 +125,7 @@ return function ($project_id) {
 
             // Overriding onclick callback of submit buttons.
             this.onclick = function(event) {
-                if (!formValidate()) {
+                if (!formValidate(required_fields_selector)) {
                     return false;
                 }
 
@@ -136,7 +145,7 @@ return function ($project_id) {
 
                     // Overriding click callback of Save & Leave button.
                     buttons[i].click = function () {
-                        if (!formValidate()) {
+                        if (!formValidate(required_fields_selector)) {
                             return false;
                         }
 
