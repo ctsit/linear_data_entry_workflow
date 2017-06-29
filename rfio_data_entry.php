@@ -1,100 +1,93 @@
 <?php
-return function($project_id) {
 
-  //get form names used internally by REDCap
-  $forms = array_keys(REDCap::getInstrumentNames());
+  return function ($project_id)
+  {
+    /* Code provided by Tiago that assembles a list of $selectors. The 
+    $selectors are gathered by starting from a list of all forms for the current
+    record and event. Then each form that is complete is removed, as well as the
+    first encountered non-complete (unverified or incomplete or new) form. The
+    remaining list contains only form IDs that need to be removed.
+    TL;DR: make $selectors, a string of form link IDs to be disabled*/
+    global $Proj;
 
-  //use form names to contruct complete_status field names
-  foreach($forms as $index => $form_name) {
-    $forms[$index] = $form_name . '_complete';
+    # Create $field array made of completion status fields of all project forms
+    /* Create $selectors array made of link IDs of all forms on left side
+    navigation panel (formMenuList)*/
+    $selectors = $fields = array();
+    foreach(array_keys($Proj->forms) as $form_name) {
+        $field_name = $form_name . '_complete';
+
+        $fields[] = $field_name;
+        $selectors[$field_name] = 'form[' . $form_name . ']';
+    }   
+
+    /* Use API to get array of completion status fields of all records
+    for the current event*/
+    $statuses = REDCap::getData($_GET['pid'], 'array', NULL,
+                $fields, $_GET['event_id']);
+
+
+    if (isset($statuses[$_GET['id']])) { # If current record is in $statuses
+      /* Set statuses as an array of the completion status fields for the
+      current record and event*/ 
+      $statuses = $statuses[$_GET['id']][$_GET['event_id']]; 
+
+      # Set flag for whether the current form should be included
+      $prev_is_complete = TRUE;
+      /* Loop through each form, exit loop if current form should not be
+      included*/
+      foreach ($statuses as $field_name => $status) {
+          if (!$prev_is_complete) {
+              break;
+          }   
+
+          # Remove current form from selectors if the previous form is complete
+          unset($selectors[$field_name]);
+          $prev_is_complete = ($status == 2);
+      }
+    }
+
+    # Remove current page's form from list of selectors.
+    unset($selectors[$_GET['page'] . '_complete']);
+    
+    # Our string of selectors, to be used/passed to Javascript.
+    $selectors = implode(', ', $selectors);
+    
+    
+    ?>
+      <script>
+        $(document).ready(function() {
+
+          // Generate array of form link IDs
+          var selector = '<?php echo $selectors; ?>'.split(", ");
+
+          // Function to disable use of target link
+          function disableLink(a) {
+            a.style.pointerEvents = 'none';
+            a.style.opacity = '.1';
+          }
+
+          function run() {
+            
+            // Loop through selector elements, find siblings
+            for (i = 0; i < selector.length; i++) {
+              var link = document.getElementById(selector[i]);
+              $siblings = $(link).siblings();
+
+              // If there is a sibling, disable its links
+              if($siblings.length !== 0) {
+                disableLink($siblings[0]);
+              }
+
+              // Disable link use of current selector element
+              disableLink(link);
+            }
+          }
+
+          run();
+        });
+      </script>
+    <?php
   }
 
-  /*request data as an array to get corresponding record ids and events with
-  complete forms */
-  $completed_forms = REDCap::getData($_GET['pid'], 'array', null, $forms);
-
-?>
-
-  <script>
-	$('document').ready(function() {
-
-    var completedForms = <?php echo json_encode($completed_forms); ?>;
-
-    /*converts a pageName on a link to the corresponding form's complete_status
-    field name*/
-    function pageToFormComplete(pageName) {
-      return pageName + '_complete';
-    }
-
-    function disableForm(cell) {
-        cell.style.pointerEvents = 'none';
-        cell.style.opacity = '.1';
-    }
-
-    function disableLink(a) {
-      a.style.pointerEvents = 'none';
-      a.style.opacity = '.1';
-    }
-
-    function getQueryString(url) {
-      url = decodeURI(url);
-      return url.match(/\?.+/)[0];
-    }
-
-    function getQueryParameters(url) {
-      var parameters = {};
-      var queryString = getQueryString(url);
-      var reg = /([^?&=]+)=?([^&]*)/g;
-      var keyValuePair;
-      while(keyValuePair = reg.exec(queryString)) {
-        parameters[keyValuePair[1]] = keyValuePair[2];
-      }
-      return parameters;
-    }
-
-    function run(){
-
-      // Get list of links to other forms from DOM
-      var $links = $('.formMenuList a');
-      // Set previous form Completed to false initially
-      var previousFormCompleted = false;
-
-      // Disable links for forms that are not complete
-      for(var i = 0; i < $links.length; i++) {
-        /* Links come in pairs, made of p1 and p2. The p1 has the complete
-        status, the p2 has the form name. The same action is performed on each
-        pair with the following i, j, and k configuration.*/
-        if(i%2 == 1){
-          j = i-1;
-          k = i-3;
-        } else {
-          j = i;
-          k = i-2;
-        }
-
-        // Prevent out of bounds (negative) array look-ups
-        if(k >= 0) {
-          if($links[k].title == 'Complete') {
-            previousFormCompleted = true;
-          } else {
-            previousFormCompleted = false;
-          }
-        }
-
-        // Disable links to forms that aren't complete or in progress
-        if($links[j].title !== 'Complete' && !previousFormCompleted && i > 1) {
-          disableLink($links[i]);
-        }
-      }
-    }
-
-    //run the hook
-		run();
-
-	});
-
-  </script>
-
-<?php
-}
 ?>
