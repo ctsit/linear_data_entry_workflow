@@ -1,20 +1,32 @@
 <?php return function($project_id) {
-    global $Proj, $question_by_section, $hidden_edit, $pageFields, $double_data_entry, $user_rights;
+    global $hidden_edit, $double_data_entry, $user_rights, $quesion_by_section, $pageFields, $Proj;
 
+    // Checking if we are in a data entry or survey page.
+    if (!in_array(PAGE, array('DataEntry/index.php', 'surveys/index.php', 'Surveys/theme_view.php'))) {
+        return;
+    }
+
+    if (PAGE == 'surveys/index.php' && !(isset($_GET['s']) && defined('NOAUTH'))) {
+        return;
+    }
+
+    // Checking if the record exists.
     if ($hidden_edit) {
-        // This page has data.
-        return;
-    }
+        $record = $_GET['id'];
+        if ($double_data_entry && $user_rights['double_data'] != 0) {
+            $record = $record . '--' . $user_rights['double_data'];
+        }
 
-    $entry_num = ($double_data_entry && $user_rights['double_data'] != 0) ? '--' . $user_rights['double_data'] : '';
-    if ($question_by_section && Records::fieldsHaveData($_GET['id'].$entry_num, $pageFields[$_GET['__page__']], $_GET['event_id'])) {
-        // This page has data.
-        return;
-    }
+        $is_survey = PAGE != 'DataEntry/index.php';
+        if ($is_survey && $question_by_section && Records::fieldsHaveData($record, $pageFields[$_GET['__page__']], $_GET['event_id'])) {
+            // The page has data.
+            return;
+        }
 
-    if (Records::formHasData($_GET['id'].$entry_num, $_GET['page'], $_GET['event_id'], $_GET['instance'])) {
-        // This page has data.
-        return;
+        if (Records::formHasData($record, $_GET['page'], $_GET['event_id'], $_GET['instance'])) {
+            // The page has data.
+            return;
+        }
     }
 
     $mappings = array();
