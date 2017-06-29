@@ -2,6 +2,22 @@
 return function ($project_id) {
     global $Proj;
 
+    // Checking if we are in a data entry or survey page.
+    if (!in_array(PAGE, array('DataEntry/index.php', 'surveys/index.php', 'Surveys/theme_view.php'))) {
+        return;
+    }
+
+    if (PAGE == 'surveys/index.php' && !(isset($_GET['s']) && defined('NOAUTH'))) {
+        return;
+    }
+
+    // Defines which form statuses can bypass validation.
+    $statuses_bypass = array();
+    if (PAGE == 'DataEntry/index.php') {
+        // If this is a data entry form, let's allow all statuses but Completed.
+        $statuses_bypass = array('', '0', '1');
+    }
+
     // Markup of required fields bullets list.
     $bullets = '';
 
@@ -30,15 +46,39 @@ return function ($project_id) {
 ?>
 <script>
     $(document).ready(function() {
-        // Setting up constants.
-        const FORM_STATUS_COMPLETED = 2;
+        // Error color constant.
         const FORM_ERROR_COLOR = 'rgb(255, 183, 190)';
+
+        // Defines which form statuses can bypass validation.
+        var statuses_bypass = <?php echo json_encode($statuses_bypass); ?>;
+
+        // Selector to search for the required fields.
+        var required_fields_selector = '<?php echo implode(', ', $req_fields_selectors); ?>';
 
         // Overriding message that says that wrong values are admissible.
         $('#valtext_divs #valtext_rangesoft2').text('You may wish to verify.');
 
-        // Selector to search for the required fields.
-        var required_fields_selector = '<?php echo implode(', ', $req_fields_selectors); ?>';
+        /**
+         * Form validation callback.
+         */
+        function formValidate(elements_validate, required_fields_selector = '', statuses_bypass = []) {
+            // Checking if current form status can bypass validation.
+            if (statuses_bypass.includes($('#questiontable select[name="<?php echo $_GET['page']; ?>_complete"]').val())) {
+                return true;
+            }
+
+            // Checking for inconsistent data.
+            if (elements_validate && !fieldsConsistencyValidate()) {
+                return false;
+            }
+
+            // Checking for empty required fields.
+            if (required_fields_selector && !requiredFieldsValidate(required_fields_selector)) {
+                return false;
+            }
+
+            return true;
+        }
 
         /**
          * Function that checks whether fields values are consistent.
@@ -96,36 +136,14 @@ return function ($project_id) {
             return validated;
         }
 
-        /**
-         * Form validation callback.
-         */
-        function formValidate(required_fields_selector = '', elements_validate = true) {
-            // Checking if form status is set as 'Complete'.
-            if ($('#questiontable select[name="<?php echo $_GET['page'];  ?>_complete"]').val() != FORM_STATUS_COMPLETED) {
-                return true;
-            }
-
-            // Checking for inconsistent data.
-            if (elements_validate && !fieldsConsistencyValidate()) {
-                return false;
-            }
-
-            // Checking for empty required fields.
-            if (required_fields_selector && !requiredFieldsValidate(required_fields_selector)) {
-                return false;
-            }
-
-            return true;
-        }
-
         // Handling submit buttons.
-        $('#submit-btn-saverecord, #submit-btn-savecontinue').each(function() {
+        $('#submit-btn-saverecord, #submit-btn-savecontinue, button[name="submit-btn-saverecord"]').each(function() {
             // Storing onclick callback of the submit button.
             $(this).data('onclick', this.onclick);
 
             // Overriding onclick callback of submit buttons.
             this.onclick = function(event) {
-                if (!formValidate(required_fields_selector)) {
+                if (!formValidate(true, required_fields_selector, statuses_bypass)) {
                     return false;
                 }
 
@@ -145,7 +163,7 @@ return function ($project_id) {
 
                     // Overriding click callback of Save & Leave button.
                     buttons[i].click = function () {
-                        if (!formValidate(required_fields_selector)) {
+                        if (!formValidate(true, required_fields_selector, statuses_bypass)) {
                             return false;
                         }
 
