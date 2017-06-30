@@ -63,14 +63,11 @@ return function($project_id) {
         for(var i = 1; i < $rows[0].cells.length; i++) {
           for(var j = 0; j < $rows.length; j++) {
 
-            //check if cell has a link in it
-            if($rows[j].cells[i].getElementsByTagName('a')[0] === undefined) {
-              continue;
-            }
-
-            //skip the 'Delete all data on event:' row
-            if($rows[j].cells[0].innerHTML === 'Delete all data on event:') {
-              continue;
+            /*skips cells that do not have links or are members of the
+            'Delete all data on event:' row */
+            if($rows[j].cells[i].getElementsByTagName('a')[0] === undefined ||
+               $rows[j].cells[0].innerHTML === 'Delete all data on event:') {
+                 continue;
             }
 
             //if last form was incomplete disable every form after it
