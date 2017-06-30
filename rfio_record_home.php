@@ -69,12 +69,15 @@ return function($project_id) {
 
         //start at 1 to avoid disabling "Data Collection Instrument" column
         for(var i = 1; i < $rows[0].cells.length; i++) {
-
-          //stop at $rows.length - 1 to avoid "delete all data on event" row
-          for(var j = 0; j < $rows.length - 1; j++) {
+          for(var j = 0; j < $rows.length; j++) {
 
             //check if cell has a link in it
             if($rows[j].cells[i].getElementsByTagName('a')[0] === undefined) {
+              continue;
+            }
+
+            //skip the 'Delete all data on event:' row
+            if($rows[j].cells[0].innerHTML === 'Delete all data on event:') {
               continue;
             }
 
@@ -87,9 +90,10 @@ return function($project_id) {
             var link = $rows[j].cells[i].getElementsByTagName('a')[0].href;
             var param = getQueryParameters(link);
 
-            /*Need to check if event_id is defined in completedForms first because
-            js crashes if it has to check the property of an undefined variable*/
-            if(completedForms[param.id][param.event_id] === undefined ||
+            /*Need to check if completedForms value's are undefined because
+            REDcap does not enter data for incomplete/new forms.*/
+            if(completedForms[param.id] === undefined ||
+               completedForms[param.id][param.event_id] === undefined ||
                completedForms[param.id][param.event_id][pageToFormComplete(param.page)] === undefined ||
                completedForms[param.id][param.event_id][pageToFormComplete(param.page)] !== "2") {
                  previousFormCompleted = false;
