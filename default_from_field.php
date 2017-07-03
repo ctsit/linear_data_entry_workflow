@@ -1,4 +1,5 @@
-<?php return function($project_id) {
+<?php
+return function($project_id) {
     global $double_data_entry, $user_rights, $quesion_by_section, $pageFields, $Proj;
 
     // Checking if we are in a data entry or survey page.
@@ -6,8 +7,13 @@
         return;
     }
 
-    // Checking additional condition for survey pages.
+    // Checking additional conditions for survey pages.
     if (PAGE == 'surveys/index.php' && !(isset($_GET['s']) && defined('NOAUTH'))) {
+        return;
+    }
+
+    // Checking current record ID.
+    if (empty($_GET['id'])) {
         return;
     }
 
