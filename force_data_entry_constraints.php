@@ -7,7 +7,13 @@ return function ($project_id) {
         return;
     }
 
+    // Checking additional conditions for survey pages.
     if (PAGE == 'surveys/index.php' && !(isset($_GET['s']) && defined('NOAUTH'))) {
+        return;
+    }
+
+    // Checking current record ID.
+    if (empty($_GET['id'])) {
         return;
     }
 
