@@ -18,18 +18,17 @@ The fields which are eligible for autofilling has to be preconfigured using cust
 Sample entry for Custom Project Settings is:
 
 	attribute : "copy_values_from_previous_event_hook",
-	value : "{
-		"demographics" : [
-			"fist_name",
-			"last_name"
-		],
-		"rx" : [
-			"address_line_1",
-			"city",
-			"state",
-			"pincode"
-		]
-	}"
+	value : "[
+				{
+					'form_name':'current_medications', 
+					'fields':['medication_name','indication']
+				},
+				{
+					'form_name': 'rx',
+					'fields':['address', 'city', 'state']
+				}
+
+			]"
 
  Note: Make sure the attribute field is "copy_values_from_previous_event_hook" and value field should be a valid json with keys being the form names not form titles and values is list of field names that needs to be auto filled by the Copy Values form Previous Event Hook.
 
