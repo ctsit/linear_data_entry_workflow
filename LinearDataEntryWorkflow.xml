@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="linear data entry workflow test" AsOfDateTime="2017-06-16T16:55:34" CreationDateTime="2017-06-16T16:55:34" SourceSystem="REDCap" SourceSystemVersion="7.3.4">
-<Study OID="Project.LinearDataEntryWorkflowTest">
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="LDEWF" AsOfDateTime="2017-07-23T07:35:51" CreationDateTime="2017-07-23T07:35:51" SourceSystem="REDCap" SourceSystemVersion="7.5.1">
+<Study OID="Project.LDEWF">
 <GlobalVariables>
-	<StudyName>linear data entry workflow test</StudyName>
-	<StudyDescription>This file contains the metadata, events, and data for REDCap project "linear data entry workflow test".</StudyDescription>
-	<ProtocolName>linear data entry workflow test</ProtocolName>
+	<StudyName>LDEWF</StudyName>
+	<StudyDescription>This file contains the metadata, events, and data for REDCap project "LDEWF".</StudyDescription>
+	<ProtocolName>LDEWF</ProtocolName>
 	<redcap:RecordAutonumberingEnabled>1</redcap:RecordAutonumberingEnabled>
 	<redcap:CustomRecordLabel></redcap:CustomRecordLabel>
 	<redcap:SecondaryUniqueField></redcap:SecondaryUniqueField>
@@ -13,7 +13,7 @@
 	<redcap:PurposeOther></redcap:PurposeOther>
 	<redcap:ProjectNotes></redcap:ProjectNotes>
 </GlobalVariables>
-<MetaDataVersion OID="Metadata.LinearDataEntryWorkflowTest_2017-06-16_1655" Name="linear data entry workflow test" redcap:RecordIdField="record_id">
+<MetaDataVersion OID="Metadata.LDEWF_2017-07-23_0735" Name="LDEWF" redcap:RecordIdField="record_id">
 	<Protocol>
 		<StudyEventRef StudyEventOID="Event.event_1_arm_1" OrderNumber="1" Mandatory="No"/>
 		<StudyEventRef StudyEventOID="Event.event_2_arm_1" OrderNumber="2" Mandatory="No"/>
@@ -84,7 +84,7 @@
 		<ItemRef ItemOID="recommended_statin_code" Mandatory="No" redcap:Variable="recommended_statin_code"/>
 		<ItemRef ItemOID="statin_prescribed" Mandatory="No" redcap:Variable="statin_prescribed"/>
 		<ItemRef ItemOID="foostatin_dosage" Mandatory="Yes" redcap:Variable="foostatin_dosage"/>
-		<ItemRef ItemOID="barstatin_dosage" Mandatory="Yes" redcap:Variable="barstatin_dosage"/>
+		<ItemRef ItemOID="barstatin_dosage" Mandatory="No" redcap:Variable="barstatin_dosage"/>
 	</ItemGroupDef>
 	<ItemGroupDef OID="rx.rx_complete" Name="Form Status" Repeating="No">
 		<ItemRef ItemOID="rx_complete" Mandatory="No" redcap:Variable="rx_complete"/>
@@ -169,7 +169,7 @@
 		<Question><TranslatedText>Foostatin Dosage</TranslatedText></Question>
 		<CodeListRef CodeListOID="foostatin_dosage.choices"/>
 	</ItemDef>
-	<ItemDef OID="barstatin_dosage" Name="barstatin_dosage" DataType="text" Length="2" redcap:Variable="barstatin_dosage" redcap:FieldType="radio" redcap:RequiredField="y" redcap:BranchingLogic="[statin_prescribed] = &#039;4567&#039;">
+	<ItemDef OID="barstatin_dosage" Name="barstatin_dosage" DataType="text" Length="2" redcap:Variable="barstatin_dosage" redcap:FieldType="radio" redcap:BranchingLogic="[statin_prescribed] = &#039;4567&#039;">
 		<Question><TranslatedText>Barstatin Dosage</TranslatedText></Question>
 		<CodeListRef CodeListOID="barstatin_dosage.choices"/>
 	</ItemDef>
@@ -221,4 +221,75 @@
 	</CodeList>
 </MetaDataVersion>
 </Study>
+<ClinicalData StudyOID="Project.LDEWF" MetaDataVersionOID="Metadata.LDEWF_2017-07-23_0735">
+	<SubjectData SubjectKey="1" redcap:RecordIdField="record_id">
+		<StudyEventData StudyEventOID="Event.event_1_arm_1" StudyEventRepeatKey="1" redcap:UniqueEventName="event_1_arm_1">
+			<FormData FormOID="Form.demographics" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="demographics.record_id" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="record_id" Value="1"/>
+					<ItemData ItemOID="first_name" Value="John"/>
+					<ItemData ItemOID="last_name" Value="Doe"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="demographics.demographics_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="demographics_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.vitals" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="vitals.systolic_blood_pressure" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="systolic_blood_pressure" Value="120"/>
+					<ItemData ItemOID="diastolic_blood_pressure" Value="160"/>
+					<ItemData ItemOID="systolic_greater_than_diastolic" Value="0"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="vitals.vitals_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="vitals_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.rx" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="rx.address_line_1" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="address_line_1" Value="1600 Pennsylvania Ave"/>
+					<ItemData ItemOID="city" Value="Gainesville"/>
+					<ItemData ItemOID="state" Value="FL"/>
+					<ItemData ItemOID="postal_code" Value="32611"/>
+					<ItemData ItemOID="recommended_statin_label" Value="Foostatin"/>
+					<ItemData ItemOID="recommended_statin_code" Value="123"/>
+					<ItemData ItemOID="statin_prescribed" Value="1234"/>
+					<ItemData ItemOID="foostatin_dosage" Value="5"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="rx.rx_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="rx_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.clinic_note" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="clinic_note.clinic_note" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="clinic_note" Value="The patient,  John Doe, has a BP of 120 /160.  Her home state is FL.  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="clinic_note.clinic_note_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="clinic_note_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+		</StudyEventData>
+		<StudyEventData StudyEventOID="Event.event_2_arm_1" StudyEventRepeatKey="1" redcap:UniqueEventName="event_2_arm_1">
+			<FormData FormOID="Form.vitals" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="vitals.systolic_blood_pressure" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="systolic_blood_pressure" Value="120"/>
+					<ItemData ItemOID="diastolic_blood_pressure" Value="80"/>
+					<ItemData ItemOID="systolic_greater_than_diastolic" Value="1"/>
+				</ItemGroupData>
+				<ItemGroupData ItemGroupOID="vitals.vitals_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="vitals_complete" Value="2"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.rx" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="rx.rx_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="rx_complete" Value="0"/>
+				</ItemGroupData>
+			</FormData>
+			<FormData FormOID="Form.clinic_note" FormRepeatKey="1">
+				<ItemGroupData ItemGroupOID="clinic_note.clinic_note_complete" ItemGroupRepeatKey="1">
+					<ItemData ItemOID="clinic_note_complete" Value="0"/>
+				</ItemGroupData>
+			</FormData>
+		</StudyEventData>
+	</SubjectData>
+</ClinicalData>
 </ODM>
