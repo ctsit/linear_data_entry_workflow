@@ -1,5 +1,5 @@
 <?php
-	
+
 	return function($project_id){
 		include(dirname(__FILE__)."/../redcap_custom_project_settings/cps_lib.php");
 
@@ -9,7 +9,7 @@
 		$event_id = $qs_params['event_id'];
 
 		$cps_lib = new cps_lib();
-		$fieldsObj = $cps_lib->getAttributeData($pid, 'copy_values_from_previous_event_hook');
+		$fieldsObj = $cps_lib->getAttributeData($pid, 'copy_values_from_previous_event');
 		$parsed_fieldsobj = str_replace("'", '"', $fieldsObj);
 		$decoded_fieldsobj = json_decode($parsed_fieldsobj);
 		$fields_array = array();
