@@ -1,7 +1,7 @@
 <?php
 
 	return function($project_id){
-		include(dirname(__FILE__)."/../redcap_custom_project_settings/cps_lib.php");
+		require_once "../../plugins/custom_project_settings/cps_lib.php";
 
 		parse_str($_SERVER['QUERY_STRING'], $qs_params);
 		$pid = $qs_params['pid'];
