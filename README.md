@@ -16,18 +16,23 @@ The fields eligible for autofilling have to be preconfigured using [custom_proje
 
 Sample entry for Custom Project Settings that works with the included test project, [LinearDataEntryWorkflow.xml](LinearDataEntryWorkflow.xml) is:
 
-	attribute : "copy_values_from_previous_event",
-	value : "[
-				{
-					'form_name':'current_medications',
-					'fields':['medication_name','indication']
-				},
-				{
-					'form_name': 'rx',
-					'fields':['address', 'city', 'state']
-				}
-
-			]"
+    [
+        {
+            "form_name": "current_medications",
+            "fields": [
+                "medication_name",
+                "indication"
+            ]
+        },
+        {
+            "form_name": "rx",
+            "fields": [
+                "address_line_1",
+                "city",
+                "state"
+            ]
+        }
+    ]
 
  Note: The above data should be saved into an attribute field with the name "copy_values_from_previous_event".  The value field should be valid json like that structured above.  `form_name` identifies the forms with fields that will be copied from previous events as each new form-event is created.  `fields` is an list of field names to be copied for each such form.
 
