@@ -1,5 +1,5 @@
 <?php
-
+	
 	return function($project_id){
 		require_once "../../plugins/custom_project_settings/cps_lib.php";
 
@@ -56,13 +56,12 @@
 			}
 		}
 		$encoded_result = json_encode($result);
-		//print_r($result);
 	?>
 	<script type="text/javascript">
 		var phpArray = '<?php echo $encoded_result; ?>';
 		var resultArray = JSON.parse(phpArray);
 		for(var i=0;i<resultArray.length;i++){
-			$('input[name="'+resultArray[i].field_name+'"]').val(resultArray[i].value);
+			$('[name="'+resultArray[i].field_name+'"]').val(resultArray[i].value);
 		}
 	</script>
 	<?php
