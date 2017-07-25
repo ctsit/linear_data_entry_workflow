@@ -51,7 +51,8 @@ Sample entry for Custom Project Settings that works with the included test proje
             "fields": [
                 "address_line_1",
                 "city",
-                "state"
+                "state",
+                "postal_code"
             ]
         }
     ]
