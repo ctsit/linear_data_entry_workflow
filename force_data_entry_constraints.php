@@ -143,7 +143,7 @@ return function ($project_id) {
         }
 
         // Handling submit buttons.
-        $('#submit-btn-saverecord, #submit-btn-savecontinue, button[name="submit-btn-saverecord"]').each(function() {
+        $('#submit-btn-saverecord, #submit-btn-savecontinue, #submit-btn-savenextform, button[name="submit-btn-saverecord"]').each(function() {
             // Storing onclick callback of the submit button.
             $(this).data('onclick', this.onclick);
 

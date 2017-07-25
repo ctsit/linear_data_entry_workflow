@@ -51,7 +51,8 @@ Sample entry for Custom Project Settings that works with the included test proje
             "fields": [
                 "address_line_1",
                 "city",
-                "state"
+                "state",
+                "postal_code"
             ]
         }
     ]
@@ -76,7 +77,7 @@ If you are deploying these hooks using UF CTS-IT's [redcap_deployment](https://g
 
     MYPID=123
     fab instance:vagrant activate_hook:redcap_every_page_top,rfio_dashboard.php,$MYPID
-    fab instance:vagrant activate_hook:redcap_every_page_top,rfio_data_entry.php,$MYPID
+    fab instance:vagrant activate_hook:redcap_data_entry_form,rfio_data_entry.php,$MYPID
     fab instance:vagrant activate_hook:redcap_every_page_top,rfio_record_home.php,$MYPID
     fab instance:vagrant activate_hook:redcap_data_entry_form,force_data_entry_constraints.php,$MYPID
     fab instance:vagrant activate_hook:redcap_data_entry_form,copy_values_from_previous_event.php,$MYPID
@@ -93,7 +94,7 @@ These hooks are designed to be activated as redcap_data_entry_form hook function
 When using the local test environment provided by UF CTS-IT's [redcap_deployment](https://github.com/ctsit/redcap_deployment) tools ([https://github.com/ctsit/redcap_deployment](https://github.com/ctsit/redcap_deployment)), you can use the deployment tools to configure these hooks for testing in the local VM.  If clone this repo as a child of the redcap_deployment repo, you can configure from the root of the redcap_deployment repo like this:
 
     fab vagrant test_hook:redcap_every_page_top,linear_data_entry_workflow/rfio_dashboard.php
-    fab vagrant test_hook:redcap_every_page_top,linear_data_entry_workflow/rfio_data_entry.php
+    fab vagrant test_hook:redcap_data_entry_form,linear_data_entry_workflow/rfio_data_entry.php
     fab vagrant test_hook:redcap_every_page_top,linear_data_entry_workflow/rfio_record_home.php
     fab vagrant test_hook:redcap_data_entry_form,linear_data_entry_workflow/force_data_entry_constraints.php
     fab vagrant test_hook:redcap_data_entry_form,linear_data_entry_workflow/copy_values_from_previous_event.php
