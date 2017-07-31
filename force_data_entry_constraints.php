@@ -40,7 +40,7 @@ return function ($project_id) {
         $field_label = filter_tags(label_decode($field_info['element_label']));
         $bullets .= '<div class="req-bullet req-bullet--' . $field_name . '" style="margin-left: 1.5em; text-indent: -1em; display: none;"> &bull; ' . $field_label . '</div>';
 
-        $req_fields_selectors[] = '#questiontable ' . ($field_info['element_type'] == 'select' ? 'select' : 'input') . '[name="' . $field_name . '"]';
+        $req_fields_selectors[] = '#questiontable ' . ($field_info['element_type'] == 'select' ? 'select' : 'input') . '[name="' . $field_name . '"]:visible';
     }
 
     // Printing required fields popup (hidden yet).
@@ -93,7 +93,7 @@ return function ($project_id) {
             var validated = true;
 
             // Running the validation callback of each form element (e.g. checking for numbers out of range).
-            $('#questiontable input, #questiontable select').each(function() {
+            $('#questiontable input:visible, #questiontable select:visible').each(function() {
                 if (typeof this.onblur === 'function') {
                     this.onblur.call(this);
 
