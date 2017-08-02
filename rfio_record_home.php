@@ -41,7 +41,11 @@ return function($project_id) {
 
       function getQueryString(url) {
         url = decodeURI(url);
-        return url.match(/\?.+/)[0];
+                var matchVal = url.match("/\?.+");
+        if (matchVal != null && matchVal.length > 0) {
+          return matchVal[0];
+        }
+        return "";
       }
 
       function getQueryParameters(url) {
