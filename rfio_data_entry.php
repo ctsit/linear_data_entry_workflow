@@ -54,18 +54,16 @@ return function($project_id) {
 
           for(var i = 0; i < $links.length; i++) {
             var childLinks = $links[i].querySelectorAll('a');
-
-            //if last form was incomplete disable every form after it
-            if(!previousFormCompleted) {
-              childLinks.forEach(function(url) {
-                disableForm(url);
-              });
-              continue;
-            }
-
             for(var j = 0; j < childLinks.length; j++) {
               var url = childLinks[j].href;
               var param = getQueryParameters(url);
+
+
+              //if last form was incomplete disable every form after it
+              if(!previousFormCompleted) {
+                disableForm(childLinks[j]);
+                continue;
+              }
 
               /*Need to check if completedForms value's are undefined because
               REDcap does not enter data for incomplete/new forms.*/
@@ -74,6 +72,8 @@ return function($project_id) {
                  completedForms[param.id][param.event_id][pageToFormComplete(param.page)] === undefined ||
                  completedForms[param.id][param.event_id][pageToFormComplete(param.page)] !== "2") {
                    previousFormCompleted = false;
+                   //skip text link next to button if its there
+                   j++;
                    continue;
               }
             }
