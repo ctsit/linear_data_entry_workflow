@@ -1,6 +1,12 @@
 <?php
 return function($project_id) {
 
+  // Read configuration data from the custom_project_settings data store
+  $my_extension_name = 'rfio_hook';
+  require_once "../../plugins/custom_project_settings/cps_lib.php";
+  $cps = new cps_lib();
+  $my_settings = $cps->getAttributeData($project_id, $my_extension_name);
+
   //get form names used internally by REDCap
   $forms = array_keys(REDCap::getInstrumentNames());
 
@@ -20,6 +26,8 @@ return function($project_id) {
     $('document').ready(function() {
 
       var completedForms = <?php echo json_encode($completed_forms) ?>;
+      var exceptions = <?php echo $my_settings ?>;
+      console.log(completedForms)
 
       /*converts a pageName on a link to the corresponding form's complete_status
       field name*/
@@ -58,6 +66,10 @@ return function($project_id) {
               var url = childLinks[j].href;
               var param = getQueryParameters(url);
 
+              //if last form was incomplete disable every form after it
+              if(exceptions.indexOf(param.page) != -1){
+                continue;
+              }
 
               //if last form was incomplete disable every form after it
               if(!previousFormCompleted) {
