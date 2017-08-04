@@ -73,6 +73,7 @@ return function($project_id) {
 					var link = $rows[i].cells[j].getElementsByTagName('a')[0].href;
 					var param = getQueryParameters(link);
 
+					//check if form is an exception
 					if(exceptions.indexOf(param.page) != -1) {
 						continue;
 					}
