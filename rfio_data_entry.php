@@ -76,6 +76,27 @@ return function($project_id) {
         return Object.keys(events[armNum]['events']);
       }
 
+      //checks if all of the forms before the current event have been completed
+      function previousFormsComplete(record_id, event_id) {
+        var forms = completedForms[record_id];
+        var arm = getArm(event_id);
+        var eventsInArm = getEventsInArm(arm);
+        var previousFormCompleted = true;
+
+        for(var index in eventsInArm) {
+          var currentEvent = eventsInArm[index];
+          if(currentEvent >= event_id) {
+            break;
+          }
+
+          if(!instrumentsComplete(currentEvent, forms[currentEvent])) {
+            previousFormCompleted = false;
+            break;
+          }
+        }
+
+        return previousFormCompleted;
+      }
 
       //checks if every instrument for the given event has been completed
       function instrumentsComplete(eventId, instrumentsData) {
