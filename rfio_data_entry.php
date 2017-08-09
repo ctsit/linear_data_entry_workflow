@@ -98,7 +98,7 @@ return function($project_id) {
       }
 
       //checks if every instrument for the given event has been completed
-      function instrumentsComplete(eventId, instrumentsData) {
+      function instrumentsComplete(eventId, completionData) {
         var complete = true;
         var instruments = getEventForms(eventId)
 
@@ -111,7 +111,7 @@ return function($project_id) {
           }
 
           //check completion status
-          if(instrumentsData[pageToFormComplete(instrument)] !== "2") {
+          if(completionData[pageToFormComplete(instrument)] !== "2") {
             complete = false;
             break;
           }
