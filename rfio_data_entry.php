@@ -76,6 +76,31 @@ return function($project_id) {
         return Object.keys(events[armNum]['events']);
       }
 
+
+      //checks if every instrument for the given event has been completed
+      function instrumentsComplete(eventId, instrumentsData) {
+        var complete = true;
+        var instruments = getEventForms(eventId)
+
+        for(index in instruments) {
+          var instrument = instruments[index];
+
+          //check if current form is an exception
+          if(exceptions.indexOf(instrument) !== -1) {
+            continue;
+          }
+
+          //check completion status
+          if(instrumentsData[pageToFormComplete(instrument)] !== "2") {
+            complete = false;
+            break;
+          }
+        }
+
+        return complete;
+      }
+
+
       function run(){
           var $links = $('.formMenuList');
           var previousFormCompleted = true;
