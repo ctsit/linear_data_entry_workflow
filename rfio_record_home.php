@@ -9,7 +9,7 @@ return function($project_id) {
   }
 
   // Read configuration data from the custom_project_settings data store
-	$my_extension_name = 'rfio_hook';
+	$my_extension_name = 'rfio_hooks';
 	require_once "../../plugins/custom_project_settings/cps_lib.php";
 	$cps = new cps_lib();
 	$my_settings = $cps->getAttributeData($project_id, $my_extension_name);
