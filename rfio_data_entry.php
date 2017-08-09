@@ -124,7 +124,7 @@ return function($project_id) {
 
       function run(){
           var $links = $('.formMenuList');
-          var previousFormCompleted = true;
+          var previousFormCompleted = previousFormsComplete(<?php echo $_GET['id'], ',', $_GET['event_id']?>);
 
           for(var i = 0; i < $links.length; i++) {
             var childLinks = $links[i].querySelectorAll('a');
