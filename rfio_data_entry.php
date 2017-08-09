@@ -19,6 +19,8 @@ return function($project_id) {
   complete forms */
   $completed_forms = REDCap::getData($_GET['pid'], 'array', $_GET['id'], $forms);
 
+  //Proj is a REDCap var used to pass information about the current project
+  global $Proj;
   ?>
 
     <script>
@@ -54,6 +56,24 @@ return function($project_id) {
           parameters[keyValuePair[1]] = keyValuePair[2];
         }
         return parameters;
+      }
+
+      //returns the arm number of the given event
+      function getArm(eventId) {
+        var eventInfo = <?php echo json_encode($Proj->eventInfo) ?>;
+        return eventInfo[eventId]['arm_num'];
+      }
+
+      //returns an array of instrument names for the given event
+      function getEventForms(eventId) {
+        var eventForms = <?php echo json_encode($Proj->eventsForms) ?>;
+        return eventForms[eventId];
+      }
+
+      //returns an array of event ids for a given arm number
+      function getEventsInArm(armNum) {
+        var events = <?php echo json_encode($Proj->events) ?>;
+        return Object.keys(events[armNum]['events']);
       }
 
       function run(){
