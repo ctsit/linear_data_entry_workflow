@@ -28,7 +28,7 @@ return function($project_id) {
     $('document').ready(function() {
 
       var completedForms = <?php echo json_encode($completed_forms) ?>;
-      var exceptions = <?php echo $my_settings ?>;
+      var exceptions = <?php echo ($my_settings ? $my_settings : "[]"); ?>;
 
       /*converts a pageName on a link to the corresponding form's complete_status
       field name*/
