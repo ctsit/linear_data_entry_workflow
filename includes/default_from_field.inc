@@ -1,5 +1,6 @@
 <?php
-return function($project_id) {
+
+function linear_data_entry_workflow_default_from_field($project_id, $record, $instrument, $event_id, $group_id) {
     global $double_data_entry, $user_rights, $quesion_by_section, $pageFields, $Proj;
 
     // Checking if we are in a data entry or survey page.

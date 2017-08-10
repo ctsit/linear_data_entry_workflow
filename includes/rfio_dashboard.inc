@@ -1,6 +1,6 @@
 <?php
-return function($project_id) {
 
+function linear_data_entry_workflow_rfio_dashboard($project_id) {
 	$URL = $_SERVER['REQUEST_URI'];
 
 	//check if we are on the right page

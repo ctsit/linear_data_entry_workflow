@@ -1,5 +1,5 @@
 <?php
-return function ($project_id) {
+function linear_data_entry_workflow_force_data_entry_constraints($project_id, $record, $instrument, $event_id, $group_id) {
     global $Proj;
 
     // Checking if we are in a data entry or survey page.

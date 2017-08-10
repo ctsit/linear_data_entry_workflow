@@ -1,5 +1,5 @@
 <?php
-return function($project_id) {
+function linear_data_entry_workflow_rfio_data_entry($project_id, $record, $instrument, $event_id, $group_id) {
 
   //get form names used internally by REDCap
   $forms = array_keys(REDCap::getInstrumentNames());

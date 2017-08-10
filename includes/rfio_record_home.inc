@@ -1,5 +1,5 @@
 <?php
-return function($project_id) {
+function linear_data_entry_workflow_rfio_record_home($project_id) {
 
   $URL = $_SERVER['REQUEST_URI'];
 
