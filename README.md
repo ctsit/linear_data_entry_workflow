@@ -23,7 +23,7 @@ This series of hooks refines the options users have to navigate through the proj
 2. The rfio\_record\_home hook performs much the same function as rfio_dashboard, but on an individual record's home page. This means that each event is evaluated separately, and the form immediately ensuing the last complete form is the last accessible form.
 3. The rfio\_data\_entry hook prevents users from using the left hand sidebar links to navigate to forms that should be inaccessible.
 
-These hooks can be preconfigured to ignore certain forms by using custom_project_settings](https://github.com/ctsit/custom_project_settings).
+These hooks can be preconfigured to ignore certain forms by using [custom_project_settings](https://github.com/ctsit/custom_project_settings).
 
 Here is a sample JSON that can be used for these hooks:
 
