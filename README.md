@@ -1,6 +1,6 @@
 # Linear Data Entry Workflow
 
-This extension forces a linear data entry workflow across REDCap forms and events. The linear workflow is enforced by removing access to any form which does not immediately follow the last completed form. In this way, if a user has not filled out the first form, they cannot procede to the second (or and subsequent) form.
+This extension forces a linear data entry workflow across REDCap forms and events. The linear workflow is enforced by removing access to any form which does not immediately follow the last completed form. In this way, if a user has not filled out the first form, they cannot proceed to the second (or and subsequent) form.
 
 This extension also facilitates form completion for users. If the project is longitudinal, then users can specify fields that should be automatically filled using the entries from the previous event.
 
@@ -20,8 +20,19 @@ This series of hooks refines the options users have to navigate through the proj
 1. The rfio\_dashboard hook ensures the record status dashboard only reveals forms that should be accessible. The hook goes through each record, and disables links to all forms that are not complete or immediately following a complete form. If there are multiple events, forms are evaluated one event at a time with the assumption that each event must be completed before any forms on the next event can be accessed.
 
   Continuing with the above example: if forms X, Y, and Z are designated for both a January and February event, January's form Z must be complete before the user can fill out February X.
-2. The rfio\_record\_home hook performs much the same function as rfio_dashboard, but on an individual record's home page. This means that each event is evaluated separately, and the form immediately ensuing the last complete form is the last accesible form.
+2. The rfio\_record\_home hook performs much the same function as rfio_dashboard, but on an individual record's home page. This means that each event is evaluated separately, and the form immediately ensuing the last complete form is the last accessible form.
 3. The rfio\_data\_entry hook prevents users from using the left hand sidebar links to navigate to forms that should be inaccessible.
+
+These hooks can be preconfigured to ignore certain forms by using [custom_project_settings](https://github.com/ctsit/custom_project_settings).
+
+Here is a sample JSON that can be used for these hooks:
+
+  [
+    "lab_results",
+    "end_survey"
+  ]
+
+ Note: The above data should be saved into an attribute field with the name "rfio_hooks".  The value field should be valid json like that structured above. The values inside the JSON above are the names of the forms you would like to rfio_hooks to ignore.
 
 ### force_data_entry_constraints.php
 
@@ -32,7 +43,7 @@ For example, if the field 'Age' requires a number from 0 to 99 and the user ente
 
 ### copy_values_from_previous_event.php
 
-The hook reads a configurable list of field values from previous form events and writes them into the same named values as a new form is opened. Data on the old form-event is not modified. Data on the new form event can be saved as is or modified. If there is no previosu event or the previous event fields are blank, no data is copied and no error is returned.
+The hook reads a configurable list of field values from previous form events and writes them into the same named values as a new form is opened. Data on the old form-event is not modified. Data on the new form event can be saved as is or modified. If there is no previous event or the previous event fields are blank, no data is copied and no error is returned.
 
 The fields eligible for autofilling have to be preconfigured using [custom_project_settings](https://github.com/ctsit/custom_project_settings) for that project.
 

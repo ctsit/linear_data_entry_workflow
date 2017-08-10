@@ -8,6 +8,12 @@ return function($project_id) {
     return;
   }
 
+  // Read configuration data from the custom_project_settings data store
+	$my_extension_name = 'rfio_hooks';
+	require_once "../../plugins/custom_project_settings/cps_lib.php";
+	$cps = new cps_lib();
+	$my_settings = $cps->getAttributeData($project_id, $my_extension_name);
+
   //get form names used internally by REDCap
   $forms = array_keys(REDCap::getInstrumentNames());
 
@@ -27,6 +33,7 @@ return function($project_id) {
     $('document').ready(function() {
 
       var completedForms = <?php echo json_encode($completed_forms) ?>;
+      var exceptions = <?php echo ($my_settings ? $my_settings : "[]"); ?>;
 
       /*converts a pageName on a link to the corresponding form's complete_status
       field name*/
@@ -34,11 +41,13 @@ return function($project_id) {
         return pageName + '_complete';
       }
 
+      //disables a link to a form
       function disableForm(cell) {
           cell.style.pointerEvents = 'none';
           cell.style.opacity = '.1';
       }
 
+      //returns the query string of the given url
       function getQueryString(url) {
         url = decodeURI(url);
                 var matchVal = url.match("/\?.+");
@@ -48,6 +57,8 @@ return function($project_id) {
         return "";
       }
 
+      /*returns a set of key-value pairs that correspond to the query parameters
+      in the given url.*/
       function getQueryParameters(url) {
         var parameters = {};
         var queryString = getQueryString(url);
@@ -59,6 +70,7 @@ return function($project_id) {
         return parameters;
       }
 
+      //main buisness logic
       function run(){
         var $rows = $('#event_grid_table tbody tr');
         var previousFormCompleted = true;
@@ -74,14 +86,19 @@ return function($project_id) {
                  continue;
             }
 
+            var link = $rows[j].cells[i].getElementsByTagName('a')[0].href;
+            var param = getQueryParameters(link);
+
+            //check if form is an exception
+            if(exceptions.indexOf(param.page) != -1) {
+              continue;
+            }
+
             //if last form was incomplete disable every form after it
             if(!previousFormCompleted) {
               disableForm($rows[j].cells[i]);
               continue;
             }
-
-            var link = $rows[j].cells[i].getElementsByTagName('a')[0].href;
-            var param = getQueryParameters(link);
 
             /*Need to check if completedForms value's are undefined because
             REDcap does not enter data for incomplete/new forms.*/
