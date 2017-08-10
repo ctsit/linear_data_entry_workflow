@@ -41,11 +41,13 @@ return function($project_id) {
         return pageName + '_complete';
       }
 
+      //disables a link to a form
       function disableForm(cell) {
           cell.style.pointerEvents = 'none';
           cell.style.opacity = '.1';
       }
 
+      //returns the query string of the given url
       function getQueryString(url) {
         url = decodeURI(url);
                 var matchVal = url.match("/\?.+");
@@ -55,6 +57,8 @@ return function($project_id) {
         return "";
       }
 
+      /*returns a set of key-value pairs that correspond to the query parameters
+      in the given url.*/
       function getQueryParameters(url) {
         var parameters = {};
         var queryString = getQueryString(url);
@@ -66,6 +70,7 @@ return function($project_id) {
         return parameters;
       }
 
+      //main buisness logic
       function run(){
         var $rows = $('#event_grid_table tbody tr');
         var previousFormCompleted = true;
