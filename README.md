@@ -11,8 +11,9 @@ The last major feature of this extension is addition of the action tag @DEFAULT-
     - [Custom Project Settings](https://github.com/ctsit/xman)
 
 ## Installation
+    - Download Linear Data Entry Workflow and drop `linear_data_entry_workflow` folder at `<your_redcap_docroot>/xman/extensions` directory.
     - Go to **Control Center > Extensions Manager (XMan)** and enable Linear Data Entry Workflow.
-    - For each project you want to use this extension, go to the project home page, then access **Extensions Manager (XMan)**, and finally enable Linear Data Entry Workflow.
+    - For each project you want to use this extension, go to the project home page, then access **Extensions Manager (XMan)**, and enable Linear Data Entry Workflow for that project.
 
 
 ## Functionality of Linear Workflow Extensions
