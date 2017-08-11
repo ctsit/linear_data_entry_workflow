@@ -3,5 +3,5 @@
     "description": "This extension forces a linear data entry workflow across REDCap forms and events.",
     "global": 0,
     "version": "1.0",
-    "authors": "Tiago Bember Simeão <tbembersimeao@ufl.edu>, Dileep Rajput <rajputd@ufl.edu>, Prasad Lanka <planka@ufl.edu>, Surya Prasanna <suryayalla@ufl.edu>, Stewart Wehmeyer <swehmeyer@ufl.edu>, Taryn Stoffs <tls@ufl.edu>, Philip Chase <pbc@ufl.edu>, Mike Conlon, Ph.D. <mconlon@ufl.edu>, Carl J Pepine, M.D., MACC"
+    "project_url": "https://github.com/ctsit/linear_data_entry_workflow"
 }
