@@ -7,13 +7,13 @@ This extension also facilitates form completion for users. If the project is lon
 The last major feature of this extension is addition of the action tag @DEFAULT-FROM-FIELD. This actiontag allows default values to be set for checkbox, truefalse, and textbox fields based on the value entered into a previous field.
 
 ## Prerequisites
-    - [XMan](https://github.com/ctsit/xman)
-    - [Custom Project Settings](https://github.com/ctsit/xman)
+- [XMan](https://github.com/ctsit/xman)
+- [Custom Project Settings](https://github.com/ctsit/custom_project_settings)
 
 ## Installation
-    - Download Linear Data Entry Workflow and drop `linear_data_entry_workflow` folder at `<your_redcap_docroot>/xman/extensions` directory.
-    - Go to **Control Center > Extensions Manager (XMan)** and enable Linear Data Entry Workflow.
-    - For each project you want to use this extension, go to the project home page, then access **Extensions Manager (XMan)**, and enable Linear Data Entry Workflow for that project.
+- Download Linear Data Entry Workflow and drop `linear_data_entry_workflow` folder at `<your_redcap_docroot>/xman/extensions` directory.
+- Go to **Control Center > Extensions Manager (XMan)** and enable Linear Data Entry Workflow.
+- For each project you want to use this extension, go to the project home page, then access **Extensions Manager (XMan)**, and enable Linear Data Entry Workflow for that project.
 
 
 ## Functionality of Linear Workflow Extensions
