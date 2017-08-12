@@ -4,7 +4,7 @@ This extension forces a linear data entry workflow across REDCap forms and event
 
 This extension also facilitates form completion for users. If the project is longitudinal, then users can specify fields that should be automatically filled using the entries from the previous event.
 
-The last major feature of this extension is addition of the action tag @DEFAULT-FROM-FIELD. This actiontag allows default values to be set for checkbox, truefalse, and textbox fields based on the value entered into a previous field.
+The last major feature of this extension is addition of the action tag `@DEFAULT-FROM-FIELD`. This actiontag allows default values to be set for checkbox, truefalse, and textbox fields based on the value entered into a previous field.
 
 ## Prerequisites
 - [XMan](https://github.com/ctsit/xman)
@@ -29,7 +29,9 @@ This series of hooks refines the options users have to navigate through the proj
 1. The rfio\_dashboard hook ensures the record status dashboard only reveals forms that should be accessible. The hook goes through each record, and disables links to all forms that are not complete or immediately following a complete form. If there are multiple events, forms are evaluated one event at a time with the assumption that each event must be completed before any forms on the next event can be accessed.
 
 Continuing with the above example: if forms X, Y, and Z are designated for both a January and February event, January's form Z must be complete before the user can fill out February X.
+
 2. The rfio\_record\_home hook performs much the same function as rfio_dashboard, but on an individual record's home page. This means that each event is evaluated separately, and the form immediately ensuing the last complete form is the last accesible form.
+
 3. The rfio\_data\_entry hook prevents users from using the left hand sidebar links to navigate to forms that should be inaccessible.
 
 ### Force Data Entry Constraints
@@ -71,6 +73,6 @@ Note: The above data should be saved into an attribute field with the name "copy
 
 ### @DEFAULT-FROM-FIELD Action Tag
 
-This extension provides a new action tag named @DEFAULT-FROM-FIELD. It allows users to set up a field's initial value from an existing field _on the same form_. This is useful when:
-- Using hidden fields as source for visible fields - e.g. @DEFAULT-FROM-FIELD='hidden_first_name'.
-- If a form field has been populated in the backend by a DET or API call. @DEFAULT cannot do this.
+This extension provides a new action tag named `@DEFAULT-FROM-FIELD`. It allows users to set up a field's initial value from an existing field _on the same form_. This is useful when:
+- Using hidden fields as source for visible fields - e.g. `@DEFAULT-FROM-FIELD='hidden_first_name'`.
+- If a form field has been populated in the backend by a DET or API call. `@DEFAULT` cannot do this.
