@@ -9,6 +9,7 @@ The last major feature of this module is addition of the action tag `@DEFAULT-FR
 ## Prerequisites
     - [REDCap Modules](https://github.com/vanderbilt/redcap-external-modules)
 
+
 ## Installation
     - Clone this repo into to an `<redcap-web-root>/modules/linear_data_entry_workflow_v1.0`.
     - Go to **Control Center > Manage External Modules** and enable Linear Data Entry Workflow.
