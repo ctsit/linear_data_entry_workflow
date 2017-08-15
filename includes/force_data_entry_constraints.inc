@@ -1,5 +1,13 @@
 <?php
-function linear_data_entry_workflow_force_data_entry_constraints($project_id, $record, $instrument, $event_id, $group_id) {
+/**
+ * @file
+ * Provides "Force Data Entry Constraints" feature.
+ */
+
+/**
+ * If set as completed, forces data entry to be fully complete and consistent.
+ */
+function linear_data_entry_workflow_force_data_entry_constraints() {
     global $Proj;
 
     // Checking if we are in a data entry or survey page.

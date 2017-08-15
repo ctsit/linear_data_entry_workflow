@@ -1,92 +1,100 @@
 <?php
-function linear_data_entry_workflow_rfio_data_entry($project_id, $record, $instrument, $event_id, $group_id) {
+/**
+ * @file
+ * Provides RFIO Data Entry feature.
+ */
 
-  //get form names used internally by REDCap
-  $forms = array_keys(REDCap::getInstrumentNames());
+/**
+ * Applies review forms in order (RFIO) rule to data entry forms.
+ */
+function linear_data_entry_workflow_rfio_data_entry($project_id, $record) {
+    // Get form names used internally by REDCap.
+    $forms = array_keys(REDCap::getInstrumentNames());
 
-  //use form names to contruct complete_status field names
-  foreach($forms as $index => $form_name) {
-    $forms[$index] = $form_name . '_complete';
-  }
+    // Use form names to contruct complete_status field names.
+    foreach($forms as $index => $form_name) {
+        $forms[$index] = $form_name . '_complete';
+    }
 
-  /*request data as an array to get corresponding record ids and events with
-  complete forms */
-  $completed_forms = REDCap::getData($_GET['pid'], 'array', $_GET['id'], $forms);
+    /**
+     * Request data as an array to get corresponding record ids and events with
+     * complete forms.
+     */
+    $completed_forms = REDCap::getData($project_id, 'array', $record, $forms);
 
-  ?>
+?>
 
-    <script>
-
+<script>
     $('document').ready(function() {
+        var completedForms = <?php echo json_encode($completed_forms) ?>;
 
-      var completedForms = <?php echo json_encode($completed_forms) ?>;
-
-      /*converts a pageName on a link to the corresponding form's complete_status
-      field name*/
-      function pageToFormComplete(pageName) {
-        return pageName + '_complete';
-      }
-
-      function disableForm(cell) {
-          cell.style.pointerEvents = 'none';
-          cell.style.opacity = '.1';
-      }
-
-      function getQueryString(url) {
-        url = decodeURI(url);
-        return url.match(/\?.+/)[0];
-      }
-
-      function getQueryParameters(url) {
-        var parameters = {};
-        var queryString = getQueryString(url);
-        var reg = /([^?&=]+)=?([^&]*)/g;
-        var keyValuePair;
-        while(keyValuePair = reg.exec(queryString)) {
-          parameters[keyValuePair[1]] = keyValuePair[2];
+        /**
+         * Converts a pageName on a link to the corresponding form's complete_status
+         * field name
+         */
+        function pageToFormComplete(pageName) {
+            return pageName + '_complete';
         }
-        return parameters;
-      }
 
-      function run(){
-          var $links = $('.formMenuList');
-          var previousFormCompleted = true;
+        function disableForm(cell) {
+            cell.style.pointerEvents = 'none';
+            cell.style.opacity = '.1';
+        }
 
-          for(var i = 0; i < $links.length; i++) {
-            var childLinks = $links[i].querySelectorAll('a');
+        function getQueryString(url) {
+            url = decodeURI(url);
+            return url.match(/\?.+/)[0];
+        }
 
-            //if last form was incomplete disable every form after it
-            if(!previousFormCompleted) {
-              childLinks.forEach(function(url) {
-                disableForm(url);
-              });
-              continue;
+        function getQueryParameters(url) {
+            var parameters = {};
+            var queryString = getQueryString(url);
+            var reg = /([^?&=]+)=?([^&]*)/g;
+            var keyValuePair;
+            while (keyValuePair = reg.exec(queryString)) {
+                parameters[keyValuePair[1]] = keyValuePair[2];
             }
+            return parameters;
+        }
 
-            for(var j = 0; j < childLinks.length; j++) {
-              var url = childLinks[j].href;
-              var param = getQueryParameters(url);
+        function run() {
+            var $links = $('.formMenuList');
+            var previousFormCompleted = true;
 
-              /*Need to check if completedForms value's are undefined because
-              REDcap does not enter data for incomplete/new forms.*/
-              if(completedForms[param.id] === undefined ||
-                 completedForms[param.id][param.event_id] === undefined ||
-                 completedForms[param.id][param.event_id][pageToFormComplete(param.page)] === undefined ||
-                 completedForms[param.id][param.event_id][pageToFormComplete(param.page)] !== "2") {
-                   previousFormCompleted = false;
-                   continue;
-              }
+            for (var i = 0; i < $links.length; i++) {
+                var childLinks = $links[i].querySelectorAll('a');
+
+                // If last form was incomplete disable every form after it.
+                if (!previousFormCompleted) {
+                    childLinks.forEach(function(url) {
+                        disableForm(url);
+                    });
+                    continue;
+                }
+
+                for (var j = 0; j < childLinks.length; j++) {
+                    var url = childLinks[j].href;
+                    var param = getQueryParameters(url);
+
+                    // Need to check if completedForms value's are undefined
+                    // because REDcap does not enter data for incomplete/new
+                    // forms.
+                    if (completedForms[param.id] === undefined ||
+                        completedForms[param.id][param.event_id] === undefined ||
+                        completedForms[param.id][param.event_id][pageToFormComplete(param.page)] === undefined ||
+                        completedForms[param.id][param.event_id][pageToFormComplete(param.page)] !== "2") {
+                        previousFormCompleted = false;
+                        continue;
+                    }
+                }
             }
-          }
-      }
+        }
 
-      //run the hook
-      run();
-
+        // Run the hook.
+        run();
     });
 
-    </script>
+</script>
 
 <?php
 }
-?>
