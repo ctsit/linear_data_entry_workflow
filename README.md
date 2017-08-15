@@ -7,13 +7,13 @@ This module also facilitates form completion for users. If the project is longit
 The last major feature of this module is addition of the action tag `@DEFAULT-FROM-FIELD`. This actiontag allows default values to be set for checkbox, truefalse, and textbox fields based on the value entered into a previous field.
 
 ## Prerequisites
-    - [REDCap Modules](https://github.com/vanderbilt/redcap-external-modules)
+- [REDCap Modules](https://github.com/vanderbilt/redcap-external-modules)
 
 
 ## Installation
-    - Clone this repo into to an `<redcap-web-root>/modules/linear_data_entry_workflow_v1.0`.
-    - Go to **Control Center > Manage External Modules** and enable Linear Data Entry Workflow.
-    - For each project you want to use this module, go to the project home page, click on **Manage External Modules** link, and then enable Linear Data Entry Workflow for that project.
+- Clone this repo into to an `<redcap-web-root>/modules/linear_data_entry_workflow_v1.0`.
+- Go to **Control Center > Manage External Modules** and enable Linear Data Entry Workflow.
+- For each project you want to use this module, go to the project home page, click on **Manage External Modules** link, and then enable Linear Data Entry Workflow for that project.
 
 
 ## Functionality of Linear Workflow Extensions
@@ -29,6 +29,7 @@ This feature is split in 3 parts:
 1. **RFIO Dashboard** ensures the record status dashboard only reveals forms that should be accessible. It goes through each record, and disables links to all forms that are not complete or immediately following a complete form. If there are multiple events, forms are evaluated one event at a time with the assumption that each event must be completed before any forms on the next event can be accessed.
 
 Continuing with the above example: if forms X, Y, and Z are designated for both a January and February event, January's form Z must be complete before the user can fill out February X.
+
 2. The **RFIO Record Home** performs much the same function as RFIO Dashboard, but on an individual record's home page. This means that each event is evaluated separately, and the form immediately ensuing the last complete form is the last accesible form.
 3. The **RFIO Data Entry** prevents users from using the left hand sidebar links to navigate to forms that should be inaccessible.
 
