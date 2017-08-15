@@ -78,11 +78,9 @@ function linear_data_entry_workflow_rfio_dashboard($project_id) {
                     var link = $rows[i].cells[j].getElementsByTagName('a')[0].href;
                     var param = getQueryParameters(link);
 
-                    /**
-                     * Need to check if event_id is defined in completedForms first
-                     * because js crashes if it has to check the property of an
-                     * undefined variable.
-                     */
+                    // Need to check if event_id is defined in completedForms
+                    // first  because js crashes if it has to check the property
+                    // of an undefined variable.
                     if (completedForms[param.id][param.event_id] === undefined ||
                         completedForms[param.id][param.event_id][pageToFormComplete(param.page)] === undefined ||
                         completedForms[param.id][param.event_id][pageToFormComplete(param.page)] !== "2") {

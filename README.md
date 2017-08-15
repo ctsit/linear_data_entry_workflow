@@ -11,7 +11,7 @@ The last major feature of this module is addition of the action tag `@DEFAULT-FR
 
 
 ## Installation
-- Clone this repo into to an `<redcap-web-root>/modules/linear_data_entry_workflow_v1.0`.
+- Clone this repo into to an `<redcap-web-root>/modules/linear_data_entry_workflow_v2.0.0`.
 - Go to **Control Center > Manage External Modules** and enable Linear Data Entry Workflow.
 - For each project you want to use this module, go to the project home page, click on **Manage External Modules** link, and then enable Linear Data Entry Workflow for that project.
 
