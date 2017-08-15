@@ -12,14 +12,12 @@ function linear_data_entry_workflow_rfio_data_entry($project_id, $record) {
     $forms = array_keys(REDCap::getInstrumentNames());
 
     // Use form names to contruct complete_status field names.
-    foreach($forms as $index => $form_name) {
+    foreach ($forms as $index => $form_name) {
         $forms[$index] = $form_name . '_complete';
     }
 
-    /**
-     * Request data as an array to get corresponding record ids and events with
-     * complete forms.
-     */
+    // Request data as an array to get corresponding record ids and events with
+    // complete forms.
     $completed_forms = REDCap::getData($project_id, 'array', $record, $forms);
 
 ?>

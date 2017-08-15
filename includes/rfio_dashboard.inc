@@ -17,7 +17,7 @@ function linear_data_entry_workflow_rfio_dashboard($project_id) {
     $forms = array_keys(REDCap::getInstrumentNames());
 
     // Use form names to contruct complete_status field names.
-    foreach($forms as $index => $form_name) {
+    foreach ($forms as $index => $form_name) {
         $forms[$index] = $form_name . '_complete';
     }
 
@@ -54,7 +54,7 @@ function linear_data_entry_workflow_rfio_dashboard($project_id) {
             var queryString = getQueryString(url);
             var reg = /([^?&=]+)=?([^&]*)/g;
             var keyValuePair;
-            while(keyValuePair = reg.exec(queryString)) {
+            while (keyValuePair = reg.exec(queryString)) {
                 parameters[keyValuePair[1]] = keyValuePair[2];
             }
             return parameters;

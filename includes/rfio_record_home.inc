@@ -17,7 +17,7 @@ function linear_data_entry_workflow_rfio_record_home($project_id) {
     $forms = array_keys(REDCap::getInstrumentNames());
 
     // Use form names to contruct complete_status field names
-    foreach($forms as $index => $form_name) {
+    foreach ($forms as $index => $form_name) {
         $forms[$index] = $form_name . '_complete';
     }
 
