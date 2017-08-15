@@ -1,22 +1,7 @@
 <?php
-function linear_data_entry_workflow_copy_values_from_previous_event($project_id, $record, $instrument, $event_id, $group_id){
-    require_once "../../plugins/custom_project_settings/cps_lib.php";
-
-    $cps_lib = new cps_lib();
-    $fieldsObj = $cps_lib->getAttributeData($project_id, 'copy_values_from_previous_event');
-    $parsed_fieldsobj = str_replace("'", '"', $fieldsObj);
-    $decoded_fieldsobj = json_decode($parsed_fieldsobj);
-
-    $fields_array = array();
-    $fieldsArr = json_encode($fields_array);
-    foreach ($decoded_fieldsobj as $key) {
-        if($key->form_name == $instrument){
-            $fieldsArr = $key->fields;
-        }
-    }
-    
+function linear_data_entry_workflow_copy_values_from_previous_event($project_id, $record, $instrument, $event_id, $group_id, $fieldsArr){
     $result = array();
-    $custom_data = REDCap::getData('json');
+    $custom_data = REDCap::getData($project_id, 'json');
     $encoded_data = json_decode($custom_data);
     $max_event_id = 0;
     foreach ($encoded_data as $item){

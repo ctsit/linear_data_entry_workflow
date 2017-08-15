@@ -1,7 +1,0 @@
-{
-    "name": "Linear Data Entry Workflow",
-    "description": "This extension forces a linear data entry workflow across REDCap forms and events.",
-    "global": 0,
-    "version": "1.0",
-    "project_url": "https://github.com/ctsit/linear_data_entry_workflow"
-}
