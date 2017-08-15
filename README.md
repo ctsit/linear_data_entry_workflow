@@ -50,4 +50,4 @@ To configure the fields list, go to **Manage External Modules** section of your 
 
 This module provides a new action tag named `@DEFAULT-FROM-FIELD`. It allows users to set up a field's initial value from an existing field _on the same form_. This is useful when:
 - Using hidden fields as source for visible fields - e.g. `@DEFAULT-FROM-FIELD='hidden_first_name'`.
-- If a form field has been populated in the backend by a DET or API call. @DEFAULT cannot do this.
+- If a form field has been populated in the backend by a DET or API call. `@DEFAULT` cannot do this.

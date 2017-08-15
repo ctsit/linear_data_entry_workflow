@@ -13,7 +13,7 @@ function linear_data_entry_workflow_rfio_dashboard($project_id) {
         return;
     }
 
-    //get form names used internally by REDCap
+    // Get form names used internally by REDCap.
     $forms = array_keys(REDCap::getInstrumentNames());
 
     // Use form names to contruct complete_status field names.
@@ -21,8 +21,8 @@ function linear_data_entry_workflow_rfio_dashboard($project_id) {
         $forms[$index] = $form_name . '_complete';
     }
 
-    /*request data as an array to get corresponding record ids and events with
-    complete forms */
+    // Request data as an array to get corresponding record ids and events with
+    // complete forms.
     $completed_forms = REDCap::getData($project_id, 'array', null, $forms);
 
 ?>
