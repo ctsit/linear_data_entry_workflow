@@ -18,10 +18,10 @@ class ExternalModule extends AbstractExternalModule {
      * @inheritdoc
      */
     function hook_every_page_top($project_id) {
-        include_once 'includes/rfio_dashboard.inc';
-        include_once 'includes/rfio_record_home.inc';
-        include_once 'includes/default_from_field.inc';
-        include_once 'includes/force_data_entry_constraints.inc';
+        include_once 'includes/rfio_dashboard.php';
+        include_once 'includes/rfio_record_home.php';
+        include_once 'includes/default_from_field.php';
+        include_once 'includes/force_data_entry_constraints.php';
 
         print '<script src="' . $this->getUrl('js/default-from-field-helper.js') . '"></script>';
 
@@ -35,7 +35,7 @@ class ExternalModule extends AbstractExternalModule {
      * @inheritdoc
      */
     function hook_data_entry_form($project_id, $record, $instrument, $event_id, $group_id) {
-        include_once 'includes/rfio_data_entry.inc';
+        include_once 'includes/rfio_data_entry.php';
 
         linear_data_entry_workflow_rfio_data_entry($project_id, $record);
 
@@ -43,7 +43,7 @@ class ExternalModule extends AbstractExternalModule {
             $fields = $this->getProjectSetting('fields', $project_id);
 
             if (count($fields) == count($form_names)) {
-                include_once 'includes/copy_values_from_previous_event.inc';
+                include_once 'includes/copy_values_from_previous_event.php';
 
                 $fields = array_combine($form_names, $fields);
                 linear_data_entry_workflow_copy_values_from_previous_event($project_id, $event_id, $fields[$instrument]);
