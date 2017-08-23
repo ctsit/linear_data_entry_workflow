@@ -59,7 +59,7 @@ function linear_data_entry_workflow_force_data_entry_constraints() {
         </div>';
 ?>
 <script>
-    $(document).ready(function() {
+    document.addEventListener('DOMContentLoaded', function() {
         // Error color constant.
         const FORM_ERROR_COLOR = 'rgb(255, 183, 190)';
 
@@ -150,8 +150,7 @@ function linear_data_entry_workflow_force_data_entry_constraints() {
             return validated;
         }
 
-        // Handling submit buttons.
-        $('#submit-btn-saverecord, #submit-btn-savecontinue, #submit-btn-savenextform, button[name="submit-btn-saverecord"]').each(function() {
+        $('[id^="submit-btn-save"]').each(function() {
             // Storing onclick callback of the submit button.
             $(this).data('onclick', this.onclick);
 

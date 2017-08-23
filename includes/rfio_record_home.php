@@ -66,6 +66,10 @@ function linear_data_entry_workflow_rfio_record_home($project_id) {
 
         function run() {
             var $rows = $('#event_grid_table tbody tr');
+            if ($rows.length === 0) {
+                return false;
+            }
+
             var previousFormCompleted = true;
 
             // Start at 1 to avoid disabling "Data Collection Instrument"

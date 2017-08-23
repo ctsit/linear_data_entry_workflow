@@ -62,6 +62,9 @@ function linear_data_entry_workflow_rfio_dashboard($project_id) {
 
         function run() {
             var $rows = $('#record_status_table tbody tr');
+            if ($rows.length === 0) {
+                return false;
+            }
 
             for (var i = 0; i < $rows.length; i++) {
                 var previousFormCompleted = true;
