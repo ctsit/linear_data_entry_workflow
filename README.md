@@ -1,6 +1,6 @@
 # Linear Data Entry Workflow
 
-This module forces a linear data entry workflow across REDCap forms and events. The linear workflow is enforced by removing access to any form which does not immediately follow the last completed form. In this way, if a user has not filled out the first form, they cannot procede to the second (or and subsequent) form.
+This module forces a linear data entry workflow across REDCap forms and events. The linear workflow is enforced by removing access to any form which does not immediately follow the last completed form. In this way, if a user has not filled out the first form, they cannot proceed to the second (or and subsequent) form.
 
 This module also facilitates form completion for users. If the project is longitudinal, then users can specify fields that should be automatically filled using the entries from the previous event.
 
@@ -30,8 +30,10 @@ This feature is split in 3 parts:
 
 Continuing with the above example: if forms X, Y, and Z are designated for both a January and February event, January's form Z must be complete before the user can fill out February X.
 
-2. The **RFIO Record Home** performs much the same function as RFIO Dashboard, but on an individual record's home page. This means that each event is evaluated separately, and the form immediately ensuing the last complete form is the last accesible form.
+2. The **RFIO Record Home** performs much the same function as RFIO Dashboard, but on an individual record's home page. This means that each event is evaluated separately, and the form immediately ensuing the last complete form is the last accessible form.
 3. The **RFIO Data Entry** prevents users from using the left hand sidebar links to navigate to forms that should be inaccessible.
+
+This feature can be configured to ignore certain forms. To do that, access **Manage External Modules** section of your project, click on Linear Data Entry Workflow's configure button, and fill **RFIO Exceptions** field.
 
 ### Force Data Entry Constraints
 
@@ -44,7 +46,7 @@ For example, if the field 'Age' requires a number from 0 to 99 and the user ente
 
 The feature reads a configurable list of field values from previous form events and writes them into the same named values as a new form is opened. Data on the old form-event is not modified. Data on the new form event can be saved as is or modified. If there is no previous event or the previous event fields are blank, no data is copied and no error is returned.
 
-To configure the fields list, go to **Manage External Modules** section of your project, and then click on Linear Data Entry Workflow's configure button.
+To configure the fields list, go to **Manage External Modules** section of your project, then click on Linear Data Entry Workflow's configure button, and fill **Copy Values From Previous Event** fieldset.
 
 ### @DEFAULT-FROM-FIELD Action Tag
 

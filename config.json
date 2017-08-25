@@ -55,6 +55,13 @@
     ],
     "project-settings": [
         {
+            "key": "rfio-exceptions",
+            "name": "RFIO Exceptions",
+            "required": false,
+            "type": "form-name",
+            "repeatable": true
+        },
+        {
             "key": "copy-values-from-previous-event",
             "name": "Copy values from previous event",
             "required": false,

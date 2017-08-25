@@ -7,7 +7,7 @@
 /**
  * Applies review fields in order (RFIO) rule to record home page.
  */
-function linear_data_entry_workflow_rfio_record_home($project_id) {
+function linear_data_entry_workflow_rfio_record_home($project_id, $exceptions) {
     // Check if we are on the right page.
     if (PAGE != 'DataEntry/record_home.php' || empty($_GET['id'])) {
         return;
@@ -30,6 +30,7 @@ function linear_data_entry_workflow_rfio_record_home($project_id) {
 <script>
     $('document').ready(function() {
         var completedForms = <?php echo json_encode($completed_forms) ?>;
+        var exceptions = <?php echo json_encode($exceptions); ?>;
 
         /**
          * Converts a pageName on a link to the corresponding form's
@@ -39,11 +40,17 @@ function linear_data_entry_workflow_rfio_record_home($project_id) {
             return pageName + '_complete';
         }
 
+        /**
+         * Disables a link to a form.
+         */
         function disableForm(cell) {
             cell.style.pointerEvents = 'none';
             cell.style.opacity = '.1';
         }
 
+        /**
+         * Returns the query string of the given url string.
+         */
         function getQueryString(url) {
             url = decodeURI(url);
             var matchVal = url.match("/\?.+");
@@ -53,6 +60,10 @@ function linear_data_entry_workflow_rfio_record_home($project_id) {
             return "";
         }
 
+        /**
+         * Returns a set of key-value pairs that correspond to the query
+         * parameters in the given url.
+         */
         function getQueryParameters(url) {
             var parameters = {};
             var queryString = getQueryString(url);
@@ -64,6 +75,9 @@ function linear_data_entry_workflow_rfio_record_home($project_id) {
             return parameters;
         }
 
+        /**
+         * Main business logic.
+         */
         function run() {
             var $rows = $('#event_grid_table tbody tr');
             if ($rows.length === 0) {
@@ -83,14 +97,19 @@ function linear_data_entry_workflow_rfio_record_home($project_id) {
                         continue;
                     }
 
+                    var link = $rows[j].cells[i].getElementsByTagName('a')[0].href;
+                    var param = getQueryParameters(link);
+
+                    // Check if form is an exception.
+                    if (exceptions.indexOf(param.page) != -1) {
+                        continue;
+                    }
+
                     // If last form was incomplete disable every form after it.
                     if (!previousFormCompleted) {
                         disableForm($rows[j].cells[i]);
                         continue;
                     }
-
-                    var link = $rows[j].cells[i].getElementsByTagName('a')[0].href;
-                    var param = getQueryParameters(link);
 
                     // Need to check if completedForms value's are undefined
                     // because REDcap does not enter data for incomplete/new

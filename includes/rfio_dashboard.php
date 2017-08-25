@@ -7,7 +7,7 @@
 /**
  * Applies review fields in order (RFIO) rule to the dashboard page.
  */
-function linear_data_entry_workflow_rfio_dashboard($project_id) {
+function linear_data_entry_workflow_rfio_dashboard($project_id, $exceptions) {
     // Check if we are on the right page.
     if (PAGE != 'DataEntry/record_status_dashboard.php') {
         return;
@@ -30,6 +30,7 @@ function linear_data_entry_workflow_rfio_dashboard($project_id) {
 <script>
     $('document').ready(function() {
         var completedForms = <?php echo json_encode($completed_forms) ?>;
+        var exceptions = <?php echo json_encode($exceptions); ?>;
 
         /**
          * Converts a pageName on a link to the corresponding form's
@@ -39,16 +40,26 @@ function linear_data_entry_workflow_rfio_dashboard($project_id) {
             return pageName + '_complete';
         }
 
+        /**
+         * Disables a link to a form.
+         */
         function disableForm(cell) {
             cell.style.pointerEvents = 'none';
             cell.style.opacity = '.1';
         }
 
+        /**
+         * Returns the query string of the given url string.
+         */
         function getQueryString(url) {
             url = decodeURI(url);
             return url.match(/\?.+/)[0];
         }
 
+        /**
+         * Returns a set of key-value pairs that correspond to the query
+         * parameters in the given url.
+         */
         function getQueryParameters(url) {
             var parameters = {};
             var queryString = getQueryString(url);
@@ -60,6 +71,9 @@ function linear_data_entry_workflow_rfio_dashboard($project_id) {
             return parameters;
         }
 
+        /**
+         * Main business logic.
+         */
         function run() {
             var $rows = $('#record_status_table tbody tr');
             if ($rows.length === 0) {
@@ -71,15 +85,19 @@ function linear_data_entry_workflow_rfio_dashboard($project_id) {
 
                 // Start at 1 to avoid disabling Record ID column.
                 for (var j = 1; j < $rows[i].cells.length; j++) {
+                    var link = $rows[i].cells[j].getElementsByTagName('a')[0].href;
+                    var param = getQueryParameters(link);
+
+                    // Check if form is an exception.
+                    if (exceptions.indexOf(param.page) != -1) {
+                        continue;
+                    }
 
                     // If last form was incomplete disable every form after it.
                     if (!previousFormCompleted) {
-                      disableForm($rows[i].cells[j]);
-                      continue;
+                        disableForm($rows[i].cells[j]);
+                        continue;
                     }
-
-                    var link = $rows[i].cells[j].getElementsByTagName('a')[0].href;
-                    var param = getQueryParameters(link);
 
                     // Need to check if event_id is defined in completedForms
                     // first  because js crashes if it has to check the property

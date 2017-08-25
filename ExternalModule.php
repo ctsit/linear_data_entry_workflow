@@ -25,8 +25,9 @@ class ExternalModule extends AbstractExternalModule {
 
         print '<script src="' . $this->getUrl('js/default-from-field-helper.js') . '"></script>';
 
-        linear_data_entry_workflow_rfio_dashboard($project_id);
-        linear_data_entry_workflow_rfio_record_home($project_id);
+        $exceptions = $this->getProjectSetting('rfio-exceptions', $project_id);
+        linear_data_entry_workflow_rfio_dashboard($project_id, $exceptions);
+        linear_data_entry_workflow_rfio_record_home($project_id, $exceptions);
         linear_data_entry_workflow_default_from_field();
         linear_data_entry_workflow_force_data_entry_constraints();
     }
@@ -36,18 +37,20 @@ class ExternalModule extends AbstractExternalModule {
      */
     function hook_data_entry_form($project_id, $record, $instrument, $event_id, $group_id) {
         include_once 'includes/rfio_data_entry.php';
+        linear_data_entry_workflow_rfio_data_entry($project_id, $record, $this->getProjectSetting('rfio-exceptions', $project_id));
 
-        linear_data_entry_workflow_rfio_data_entry($project_id, $record);
-
-        if (($form_names = $this->getProjectSetting('form-name', $project_id)) && in_array($instrument, $form_names)) {
-            $fields = $this->getProjectSetting('fields', $project_id);
-
-            if (count($fields) == count($form_names)) {
-                include_once 'includes/copy_values_from_previous_event.php';
-
-                $fields = array_combine($form_names, $fields);
-                linear_data_entry_workflow_copy_values_from_previous_event($project_id, $event_id, $fields[$instrument]);
-            }
+        if (!($form_names = $this->getProjectSetting('form-name', $project_id)) || !in_array($instrument, $form_names)) {
+            return;
         }
+
+        $fields = $this->getProjectSetting('fields', $project_id);
+        if (count($fields) != count($form_names)) {
+            return;
+        }
+
+        include_once 'includes/copy_values_from_previous_event.php';
+
+        $fields = array_combine($form_names, $fields);
+        linear_data_entry_workflow_copy_values_from_previous_event($project_id, $event_id, $fields[$instrument]);
     }
 }
