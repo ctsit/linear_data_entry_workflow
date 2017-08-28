@@ -18,10 +18,6 @@ class ExternalModule extends AbstractExternalModule {
      * @inheritdoc
      */
     function hook_every_page_top($project_id) {
-        if (!$project_id) {
-            return;
-        }
-
         // Initializing settings JS variable.
         echo '<script>linearDataEntryWorkflow = {};</script>';
 

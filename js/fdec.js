@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return validated;
     }
 
-    $('[id^="submit-btn-save"]').each(function() {
+    $('[name="submit-btn-saverecord"], [id^="submit-btn-save"]').each(function() {
         // Storing onclick callback of the submit button.
         $(this).data('onclick', this.onclick);
 
