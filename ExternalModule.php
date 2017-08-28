@@ -122,7 +122,7 @@ class ExternalModule extends AbstractExternalModule {
      * (optional) @param string $instrument
      *   The instrument/form ID.
      * (optional) @param array $statuses_bypass
-     *   An array of form statuses to bypass RFEC. Possible statuses:
+     *   An array of form statuses to bypass FDEC. Possible statuses:
      *   - 0 (Incomplete)
      *   - 1 (Unverified)
      *   - 2 (Completed)
