@@ -126,7 +126,11 @@ class ExternalModule extends AbstractExternalModule {
      * (optional) @param string $instrument
      *   The instrument/form ID.
      * (optional) @param array $statuses_bypass
-     *   An array of form statuses to bypass RFEC. Possible statuses: 0 (), 1 (Incomplete), 2 (Completed)
+     *   An array of form statuses to bypass RFEC. Possible statuses:
+     *   - 0 (Incomplete)
+     *   - 1 (Unverified)
+     *   - 2 (Completed)
+     *   - "" (Empty status)
      */
     protected function loadFDEC($instrument = '', $statuses_bypass = array()) {
         if ($instrument) {
