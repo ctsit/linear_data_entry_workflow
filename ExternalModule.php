@@ -94,7 +94,7 @@ class ExternalModule extends AbstractExternalModule {
         );
 
         if ($event_id) {
-            $previous_event_completed = true;
+            $settings['previousEventsCompleted'] = true;
 
             $arm = $Proj->eventInfo[$event_id]['arm_num'];
             foreach (array_keys($Proj->events[$arm]['events']) as $event) {
@@ -108,13 +108,12 @@ class ExternalModule extends AbstractExternalModule {
                     }
 
                     if ($completed_forms[$record][$event][$instrument . '_complete'] != 2) {
-                        $previous_event_completed = false;
+                        // The previous events are not completed.
+                        $settings['previousEventsCompleted'] = false;
                         break 2;
                     }
                 }
             }
-
-            $settings['previousEventCompleted'] = $previous_event_completed;
         }
 
         $this->setJsSetting('rfio', $settings);

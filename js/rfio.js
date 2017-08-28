@@ -70,7 +70,7 @@ $('document').ready(function() {
      */
     function runDataEntryForm() {
         var $links = $('.formMenuList');
-        var previousFormCompleted = settings.previousEventCompleted;
+        var previousFormCompleted = settings.previousEventsCompleted;
 
         // Hide "Save and Continue to Next Form" buttons.
         $(window).load(function() {
