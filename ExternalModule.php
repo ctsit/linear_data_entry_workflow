@@ -27,12 +27,13 @@ class ExternalModule extends AbstractExternalModule {
                     break;
                 }
 
+                $record = $_GET['id'];
+
             case 'DataEntry/record_status_dashboard.php':
                 $location = str_replace('.php', '', str_replace('DataEntry/', '', PAGE));
-                $record = empty($_GET['id']) ? null : $_GET['id'];
                 $arm = empty($_GET['arm']) ? 1 : $_GET['arm'];
 
-                $this->loadRFIO($project_id, $location, $arm, $record);
+                $this->loadRFIO($project_id, $location, $arm, isset($record) ? $record : null);
                 break;
 
             case 'surveys/index.php':
@@ -196,7 +197,6 @@ class ExternalModule extends AbstractExternalModule {
 
         $this->setJsSetting('fdec', $settings);
         $this->includeJs('js/fdec.js');
-
     }
 
     /**
