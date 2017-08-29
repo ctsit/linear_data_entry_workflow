@@ -28,7 +28,11 @@ class ExternalModule extends AbstractExternalModule {
                 }
 
             case 'DataEntry/record_status_dashboard.php':
-                $this->loadRFIO($project_id, $_GET['id'], str_replace('.php', '', str_replace('DataEntry/', '', PAGE)));
+                $location = str_replace('.php', '', str_replace('DataEntry/', '', PAGE));
+                $record = empty($_GET['id']) ? null : $_GET['id'];
+                $arm = empty($_GET['arm']) ? 1 : $_GET['arm'];
+
+                $this->loadRFIO($project_id, $location, $arm, $record);
                 break;
 
             case 'surveys/index.php':
@@ -47,7 +51,9 @@ class ExternalModule extends AbstractExternalModule {
      * @inheritdoc
      */
     function hook_data_entry_form($project_id, $record, $instrument, $event_id, $group_id) {
-        $this->loadRFIO($project_id, $record, 'data_entry_form', $event_id);
+        global $Proj;
+
+        $this->loadRFIO($project_id, 'data_entry_form', $Proj->eventInfo[$event_id]['arm_num'], $record, $event_id, $instrument);
         $this->LoadFDEC($instrument, array('', 0, 1));
     }
 
@@ -66,51 +72,65 @@ class ExternalModule extends AbstractExternalModule {
      * @param int $event_id
      *   The event ID. Only required when $location = "data_entry_form".
      */
-    protected function loadRFIO($project_id, $record, $location, $event_id = null) {
+    protected function loadRFIO($project_id, $location, $arm, $record = null, $event_id = null, $instrument = null) {
         // Proj is a REDCap var used to pass information about the current project.
         global $Proj;
 
-        // Get form names used internally by REDCap.
-        $forms = array_keys(\REDCap::getInstrumentNames());
-
         // Use form names to contruct complete_status field names.
-        foreach ($forms as $index => $form_name) {
-            $forms[$index] = $form_name . '_complete';
+        $fields = array();
+        foreach (array_keys($Proj->metadata) as $form_name) {
+            $fields[$form_name] = $form_name . '_complete';
         }
 
-        $completed_forms = \REDCap::getData($project_id, 'array', $record, $forms);
+        $completed_forms = \REDCap::getData($project_id, 'array', $record, $fields);
+        if ($record && !isset($completed_forms[$record])) {
+            require_once APP_PATH_DOCROOT . 'ProjectGeneral/form_renderer_functions.php';
+
+            // Handling new record case.
+            $completed_forms = array(getAutoId() => array());
+        }
+
         if (!$exceptions = $this->getProjectSetting('forms-exceptions', $project_id)) {
             $exceptions = array();
         }
 
-        $settings = array(
-            'completedForms' => $completed_forms,
-            'exceptions' => $exceptions,
-            'location' => $location,
-        );
+        // Building forms access matrix.
+        $forms_access = array();
+        foreach ($completed_forms as $id => $data) {
+            $forms_access[$id] = array();
+            $prev_events_completed = true;
 
-        if ($event_id) {
-            $settings['previousEventsCompleted'] = true;
-
-            $arm = $Proj->eventInfo[$event_id]['arm_num'];
             foreach (array_keys($Proj->events[$arm]['events']) as $event) {
-                if ($event >= $event_id) {
-                    break;
-                }
+                $forms_access[$id][$event] = array();
+                $prev_form_completed = $prev_events_completed;
 
-                foreach ($Proj->eventsForms[$event] as $instrument) {
-                    if (in_array($instrument, $exceptions)) {
+                foreach ($Proj->eventsForms[$event] as $form) {
+                    $forms_access[$id][$event][$form] = true;
+
+                    if (in_array($form, $exceptions)) {
                         continue;
                     }
 
-                    if ($completed_forms[$record][$event][$instrument . '_complete'] != 2) {
-                        // The previous events are not completed.
-                        $settings['previousEventsCompleted'] = false;
-                        break 2;
+                    if (!$prev_form_completed) {
+                        $prev_events_completed = false;
+                        $forms_access[$id][$event][$form] = false;
+
+                        if ($id == $record && $event == $event_id && $instrument == $form) {
+                            redirect(APP_PATH_WEBROOT . 'DataEntry/record_home.php?pid=' . $project_id . '&id=' . $record . '&arm=' . $arm);
+                        }
+
+                        continue;
                     }
+
+                    $prev_form_completed = !empty($data[$event]) && !empty($data[$event][$fields[$form]]) && $data[$event][$fields[$form]] == 2;
                 }
             }
         }
+
+        $settings = array(
+            'formsAccess' => $forms_access,
+            'location' => $location,
+        );
 
         $this->setJsSetting('rfio', $settings);
         $this->includeJs('js/rfio.js');

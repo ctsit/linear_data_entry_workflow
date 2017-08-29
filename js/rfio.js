@@ -1,14 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
     var settings = linearDataEntryWorkflow.rfio;
-    var completedForms = settings.completedForms;
-
-    /**
-     * Converts a pageName on a link to the corresponding form's complete_status
-     * field name
-     */
-    function pageToFormComplete(pageName) {
-        return pageName + '_complete';
-    }
 
     /**
      * Disables a link to a form.
@@ -35,34 +26,22 @@ document.addEventListener('DOMContentLoaded', function() {
         var queryString = getQueryString(url);
         var reg = /([^?&=]+)=?([^&]*)/g;
         var keyValuePair;
+
         while (keyValuePair = reg.exec(queryString)) {
             parameters[keyValuePair[1]] = keyValuePair[2];
         }
+
         return parameters;
     }
 
     /**
-     * Checks if completed forms values are undefined.
-     * It is needed because REDCap does not enter data for incomplete/new forms.
+     * Checks access to a link and disables it, if needed.
      */
-    function checkCompletedFormsValues(link, previousFormCompleted) {
-        var param = getQueryParameters(link.href);
-
-        // Check if form is an exception.
-        if (settings.exceptions.indexOf(param.page) !== -1) {
-            return previousFormCompleted;
-        }
-
-        if (!previousFormCompleted) {
+    function checkLinkAccess(link) {
+        var params = getQueryParameters(link.href);
+        if (!settings.formsAccess[params.id][params.event_id][params.page]) {
             disableForm(link);
-            return previousFormCompleted;
         }
-
-        var key = pageToFormComplete(param.page);
-        return completedForms[param.id] !== undefined &&
-            completedForms[param.id][param.event_id] !== undefined &&
-            completedForms[param.id][param.event_id][key] !== undefined &&
-            completedForms[param.id][param.event_id][key] === "2";
     }
 
     /**
@@ -95,19 +74,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         var $links = $('.formMenuList');
-        var previousFormCompleted = settings.previousEventsCompleted;
-
         for (var i = 0; i < $links.length; i++) {
             var childLinks = $links[i].querySelectorAll('a');
 
             for (var j = 0; j < childLinks.length; j++) {
-                var previousFormCompletedOld = previousFormCompleted;
-                previousFormCompleted = checkCompletedFormsValues(childLinks[j], previousFormCompleted);
-
-                if (previousFormCompletedOld && !previousFormCompleted) {
-                    // Skip text link next to button if its there.
-                    j++;
-                }
+                checkLinkAccess(childLinks[j]);
             }
         }
     }
@@ -122,12 +93,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         for (var i = 0; i < $rows.length; i++) {
-            var previousFormCompleted = true;
-
             // Start at 1 to avoid disabling Record ID column.
             for (var j = 1; j < $rows[i].cells.length; j++) {
                 var link = $rows[i].cells[j].getElementsByTagName('a')[0];
-                previousFormCompleted = checkCompletedFormsValues(link, previousFormCompleted);
+                checkLinkAccess(link);
             }
         }
     }
@@ -141,8 +110,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return false;
         }
 
-        var previousFormCompleted = true;
-
         // Start at 1 to avoid disabling "Data Collection Instrument"
         // column.
         for (var i = 1; i < $rows[0].cells.length; i++) {
@@ -150,12 +117,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Skips cells that do not have links or are members of the
                 // "Delete all data on event" row.
                 var link = $rows[j].cells[i].getElementsByTagName('a')[0];
-                if (link === undefined ||
-                    $rows[j].cells[0].innerHTML === 'Delete all data on event:') {
+                if (link === undefined || $rows[j].cells[0].innerHTML === 'Delete all data on event:') {
                     continue;
                 }
 
-                previousFormCompleted = checkCompletedFormsValues(link, previousFormCompleted);
+                checkLinkAccess(link);
             }
         }
     }
