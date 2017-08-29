@@ -83,7 +83,7 @@ class ExternalModule extends AbstractExternalModule {
 
         // Use form names to contruct complete_status field names.
         $fields = array();
-        foreach (array_keys($Proj->metadata) as $form_name) {
+        foreach (array_keys($Proj->forms) as $form_name) {
             $fields[$form_name] = $form_name . '_complete';
         }
 
@@ -115,7 +115,6 @@ class ExternalModule extends AbstractExternalModule {
                     }
 
                     if (!$prev_form_completed) {
-                        $prev_events_completed = false;
                         $forms_access[$id][$event][$form] = false;
 
                         if ($id == $record && $event == $event_id && $instrument == $form) {
@@ -126,7 +125,9 @@ class ExternalModule extends AbstractExternalModule {
                         continue;
                     }
 
-                    $prev_form_completed = !empty($data[$event]) && !empty($data[$event][$fields[$form]]) && $data[$event][$fields[$form]] == 2;
+                    if (!$prev_form_completed = !empty($data[$event]) && !empty($data[$event][$fields[$form]]) && $data[$event][$fields[$form]] == 2) {
+                        $prev_events_completed = false;
+                    }
                 }
             }
         }
