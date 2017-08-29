@@ -53,6 +53,10 @@ class ExternalModule extends AbstractExternalModule {
     function hook_data_entry_form($project_id, $record, $instrument, $event_id, $group_id) {
         global $Proj;
 
+        if (!$record) {
+            $record = $_GET['id'];
+        }
+
         $this->loadRFIO($project_id, 'data_entry_form', $Proj->eventInfo[$event_id]['arm_num'], $record, $event_id, $instrument);
         $this->LoadFDEC($instrument, array('', 0, 1));
     }

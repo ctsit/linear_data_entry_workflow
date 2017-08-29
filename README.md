@@ -17,7 +17,7 @@ This module forces a linear data entry workflow across REDCap forms and events. 
 
 ### Reveal Forms In Order (RFIO)
 
-This feature operate under the assumption that only complete forms and the immediately ensuing non-complete form should be accessible. For this module, complete is indicated by selecting `Completed` from the completion dropdown.
+This feature operates under the assumption that only complete forms and the immediately ensuing non-complete form should be accessible. For this module, complete is indicated by selecting "Completed" from the completion dropdown.
 
 For example, if you have 3 forms, X, Y, and Z - in that order, and only form X has been completed, then the user can access form X and form Y, but not form Z. Form Z will become available after form Y is complete.
 
