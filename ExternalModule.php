@@ -89,10 +89,8 @@ class ExternalModule extends AbstractExternalModule {
 
         $completed_forms = \REDCap::getData($project_id, 'array', $record, $fields);
         if ($record && !isset($completed_forms[$record])) {
-            require_once APP_PATH_DOCROOT . 'ProjectGeneral/form_renderer_functions.php';
-
             // Handling new record case.
-            $completed_forms = array(getAutoId() => array());
+            $completed_forms = array($record => array());
         }
 
         if (!$exceptions = $this->getProjectSetting('forms-exceptions', $project_id)) {
@@ -121,6 +119,7 @@ class ExternalModule extends AbstractExternalModule {
                         $forms_access[$id][$event][$form] = false;
 
                         if ($id == $record && $event == $event_id && $instrument == $form) {
+                            // Access denied to the current page.
                             redirect(APP_PATH_WEBROOT . 'DataEntry/record_home.php?pid=' . $project_id . '&id=' . $record . '&arm=' . $arm);
                         }
 
