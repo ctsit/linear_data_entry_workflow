@@ -1,6 +1,6 @@
-$('document').ready(function() {
-    settings = linearDataEntryWorkflow.rfio;
-    completedForms = settings.completedForms;
+document.addEventListener('DOMContentLoaded', function() {
+    var settings = linearDataEntryWorkflow.rfio;
+    var completedForms = settings.completedForms;
 
     /**
      * Converts a pageName on a link to the corresponding form's complete_status
@@ -58,7 +58,7 @@ $('document').ready(function() {
             return previousFormCompleted;
         }
 
-        key = pageToFormComplete(param.page);
+        var key = pageToFormComplete(param.page);
         return completedForms[param.id] !== undefined &&
             completedForms[param.id][param.event_id] !== undefined &&
             completedForms[param.id][param.event_id][key] !== undefined &&
@@ -69,41 +69,39 @@ $('document').ready(function() {
      * Run RFIO for data entry forms.
      */
     function runDataEntryForm() {
+        // Hide "Save and Continue to Next Form" buttons.
+        var $buttons = $('button[name="submit-btn-savenextform"]');
+
+        // Check if buttons are outside the dropdown menu.
+        if ($buttons.length !== 0) {
+            $.each($buttons, function(index, button) {
+                // Get first button in dropdown-menu.
+                var replacement = $(button).siblings('.dropdown-menu').find('a')[0];
+
+                // Modify button to behave like $replacement.
+                button.id = replacement.id;
+                button.name = replacement.name;
+                button.onclick = replacement.onclick;
+                button.innerHTML = replacement.innerHTML;
+
+                // Get rid of replacement.
+                $(replacement).remove();
+
+            });
+        }
+        else {
+            // Disable button inside the dropdown menu.
+            $('a[onclick="dataEntrySubmit(\'submit-btn-savenextform\');return false;"]').hide();
+        }
+
         var $links = $('.formMenuList');
         var previousFormCompleted = settings.previousEventsCompleted;
-
-        // Hide "Save and Continue to Next Form" buttons.
-        $(window).load(function() {
-            var $buttons = $('button[name="submit-btn-savenextform"]');
-
-            // Check if buttons are outside the dropdown menu.
-            if ($buttons.length !== 0) {
-                $.each($buttons, function(index, button) {
-                    // Get first button in dropdown-menu.
-                    var replacement = $(button).siblings('.dropdown-menu').find('a')[0];
-
-                    // Modify button to behave like $replacement.
-                    button.id = replacement.id;
-                    button.name = replacement.name;
-                    button.onclick = replacement.onclick;
-                    button.innerHTML = replacement.innerHTML;
-
-                    // Get rid of replacement.
-                    $(replacement).remove();
-
-                });
-            }
-            else {
-                // Disable button inside the dropdown menu.
-                $('a[onclick="dataEntrySubmit(\'submit-btn-savenextform\');return false;"]').hide();
-            }
-        });
 
         for (var i = 0; i < $links.length; i++) {
             var childLinks = $links[i].querySelectorAll('a');
 
             for (var j = 0; j < childLinks.length; j++) {
-                previousFormCompletedOld = previousFormCompleted;
+                var previousFormCompletedOld = previousFormCompleted;
                 previousFormCompleted = checkCompletedFormsValues(childLinks[j], previousFormCompleted);
 
                 if (previousFormCompletedOld && !previousFormCompleted) {
