@@ -19,7 +19,7 @@ class ExternalModule extends AbstractExternalModule {
      */
     function hook_every_page_top($project_id) {
         // Initializing settings JS variable.
-        echo '<script>linearDataEntryWorkflow = {};</script>';
+        echo '<script>var linearDataEntryWorkflow = {};</script>';
 
         switch (PAGE) {
             case 'DataEntry/record_home.php':
