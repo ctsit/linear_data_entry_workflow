@@ -18,8 +18,13 @@ class ExternalModule extends AbstractExternalModule {
      * @inheritdoc
      */
     function hook_every_page_top($project_id) {
+        if (!$project_id) {
+            return;
+        }
+
         // Initializing settings JS variable.
         echo '<script>var linearDataEntryWorkflow = {};</script>';
+        $record = null;
 
         switch (PAGE) {
             case 'DataEntry/record_home.php':
@@ -33,17 +38,7 @@ class ExternalModule extends AbstractExternalModule {
                 $location = str_replace('.php', '', str_replace('DataEntry/', '', PAGE));
                 $arm = empty($_GET['arm']) ? 1 : $_GET['arm'];
 
-                $this->loadRFIO($project_id, $location, $arm, isset($record) ? $record : null);
-                break;
-
-            case 'surveys/index.php':
-                // Checking additional conditions for survey pages.
-                if (!(isset($_GET['s']) && defined('NOAUTH'))) {
-                    break;
-                }
-
-            case 'Surveys/theme_view.php':
-                $this->LoadFDEC();
+                $this->loadRFIO($project_id, $location, $arm, $record);
                 break;
         }
     }
@@ -59,7 +54,7 @@ class ExternalModule extends AbstractExternalModule {
         }
 
         $this->loadRFIO($project_id, 'data_entry_form', $Proj->eventInfo[$event_id]['arm_num'], $record, $event_id, $instrument);
-        $this->LoadFDEC($instrument, array('', 0, 1));
+        $this->LoadFDEC($instrument);
     }
 
     /**
@@ -101,11 +96,10 @@ class ExternalModule extends AbstractExternalModule {
         $forms_access = array();
         foreach ($completed_forms as $id => $data) {
             $forms_access[$id] = array();
-            $prev_events_completed = true;
+            $prev_form_completed = true;
 
             foreach (array_keys($Proj->events[$arm]['events']) as $event) {
                 $forms_access[$id][$event] = array();
-                $prev_form_completed = $prev_events_completed;
 
                 foreach ($Proj->eventsForms[$event] as $form) {
                     $forms_access[$id][$event][$form] = true;
@@ -125,9 +119,7 @@ class ExternalModule extends AbstractExternalModule {
                         continue;
                     }
 
-                    if (!$prev_form_completed = !empty($data[$event]) && !empty($data[$event][$fields[$form]]) && $data[$event][$fields[$form]] == 2) {
-                        $prev_events_completed = false;
-                    }
+                    $prev_form_completed = !empty($data[$event]) && !empty($data[$event][$fields[$form]]) && $data[$event][$fields[$form]] == 2;
                 }
             }
         }
@@ -153,7 +145,7 @@ class ExternalModule extends AbstractExternalModule {
      *   - 2 (Completed)
      *   - "" (Empty status)
      */
-    protected function loadFDEC($instrument = '', $statuses_bypass = array()) {
+    protected function loadFDEC($instrument = '', $statuses_bypass = array('', 0, 1)) {
         if ($instrument) {
             $exceptions = $this->getProjectSetting('forms-exceptions', $project_id);
             if ($exceptions && in_array($instrument, $exceptions)) {
