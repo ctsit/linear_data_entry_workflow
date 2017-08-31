@@ -109,13 +109,12 @@ class ExternalModule extends AbstractExternalModule {
                     }
 
                     if (!$prev_form_completed) {
-                        $forms_access[$id][$event][$form] = false;
-
                         if ($id == $record && $event == $event_id && $instrument == $form) {
                             // Access denied to the current page.
                             redirect(APP_PATH_WEBROOT . 'DataEntry/record_home.php?pid=' . $project_id . '&id=' . $record . '&arm=' . $arm);
                         }
 
+                        $forms_access[$id][$event][$form] = false;
                         continue;
                     }
 
