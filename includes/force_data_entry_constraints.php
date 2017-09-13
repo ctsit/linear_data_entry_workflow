@@ -1,5 +1,13 @@
 <?php
-return function ($project_id) {
+/**
+ * @file
+ * Provides "Force Data Entry Constraints" feature.
+ */
+
+/**
+ * If set as completed, forces data entry to be fully complete and consistent.
+ */
+function linear_data_entry_workflow_force_data_entry_constraints() {
     global $Proj;
 
     // Checking if we are in a data entry or survey page.
@@ -51,7 +59,7 @@ return function ($project_id) {
         </div>';
 ?>
 <script>
-    $(document).ready(function() {
+    document.addEventListener('DOMContentLoaded', function() {
         // Error color constant.
         const FORM_ERROR_COLOR = 'rgb(255, 183, 190)';
 
@@ -142,8 +150,7 @@ return function ($project_id) {
             return validated;
         }
 
-        // Handling submit buttons.
-        $('#submit-btn-saverecord, #submit-btn-savecontinue, #submit-btn-savenextform, button[name="submit-btn-saverecord"]').each(function() {
+        $('[id^="submit-btn-save"]').each(function() {
             // Storing onclick callback of the submit button.
             $(this).data('onclick', this.onclick);
 
