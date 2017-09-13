@@ -54,7 +54,7 @@ class ExternalModule extends AbstractExternalModule {
         }
 
         $this->loadRFIO($project_id, 'data_entry_form', $Proj->eventInfo[$event_id]['arm_num'], $record, $event_id, $instrument);
-        $this->LoadFDEC($instrument);
+        $this->loadFDEC($instrument);
     }
 
     /**
@@ -135,7 +135,7 @@ class ExternalModule extends AbstractExternalModule {
     /**
      * Loads FDEC (force data entry constraints) feature.
      *
-     * (optional) @param string $instrument
+     * @param string $instrument
      *   The instrument/form ID.
      * (optional) @param array $statuses_bypass
      *   An array of form statuses to bypass FDEC. Possible statuses:
@@ -144,12 +144,10 @@ class ExternalModule extends AbstractExternalModule {
      *   - 2 (Completed)
      *   - "" (Empty status)
      */
-    protected function loadFDEC($instrument = '', $statuses_bypass = array('', 0, 1)) {
-        if ($instrument) {
-            $exceptions = $this->getProjectSetting('forms-exceptions', $project_id);
-            if ($exceptions && in_array($instrument, $exceptions)) {
-                return;
-            }
+    protected function loadFDEC($instrument, $statuses_bypass = array('', 0, 1)) {
+        $exceptions = $this->getProjectSetting('forms-exceptions', $project_id);
+        if ($exceptions && in_array($instrument, $exceptions)) {
+            return;
         }
 
         global $Proj;
@@ -161,7 +159,8 @@ class ExternalModule extends AbstractExternalModule {
         $req_fields_selectors = array();
 
         // Getting required fields from form config.
-        foreach ($Proj->metadata as $field_name => $field_info) {
+        foreach (array_keys($Proj->forms[$instrument]['fields']) as $field_name) {
+            $field_info = $Proj->metadata[$field_name];
             if (!$field_info['field_req']) {
                 continue;
             }
