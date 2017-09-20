@@ -55,26 +55,11 @@
     ],
     "project-settings": [
         {
-            "key": "copy-values-from-previous-event",
-            "name": "Copy values from previous event",
+            "key": "forms-exceptions",
+            "name": "Forms Exceptions",
             "required": false,
-            "type": "sub_settings",
-            "repeatable": true,
-            "sub_settings": [
-                {
-                    "key": "form-name",
-                    "name": "Form name",
-                    "required": true,
-                    "type": "form-list"
-                },
-                {
-                    "key": "fields",
-                    "name": "Fields",
-                    "required": true,
-                    "repeatable": true,
-                    "type": "field-list"
-                }
-            ]
+            "type": "form-list",
+            "repeatable": true
         }
     ]
 }
