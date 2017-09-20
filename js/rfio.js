@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
             break;
     }
 
-    if (typeof $links === 'undefined' || $links.lenght === 0) {
+    if (typeof $links === 'undefined' || $links.length === 0) {
         return false;
     }
 
