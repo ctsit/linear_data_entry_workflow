@@ -12,3 +12,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [2.0.0] - 2017-08-15
 - Turned into a REDCap module
 - Custom Project Settings is not required anymore
+
+### Changed
+- Small bugfixes. (Tiago Bember Simeao)
+- Bringing complexity to the backend and denying access to non allowed pages. (Tiago Bember Simeao)
+- Refactoring Linear Data Entry Workflow. (Tiago Bember Simeao)
+- Managing conflicts with "Add exception list feature" pull request (Tiago Bember Simeao)
+- Remaming .inc files to .php. (Tiago Bember Simeao)
+- Changing version to 2.0.0. (Tiago Bember Simeao)
+- Converting XMan extension into a REDCap module. (Tiago Bember Simeao)
+- Replacing authors with project URL on XMan table. (Tiago Bember Simeao)
+- Turning this project as a XMan extension. (Tiago Bember Simeao)
