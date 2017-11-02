@@ -126,6 +126,7 @@ class ExternalModule extends AbstractExternalModule {
         $settings = array(
             'formsAccess' => $forms_access,
             'location' => $location,
+            'instrument' => $instrument,
         );
 
         $this->setJsSetting('rfio', $settings);
