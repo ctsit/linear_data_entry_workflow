@@ -73,10 +73,13 @@ document.addEventListener('DOMContentLoaded', function() {
         var $buttonsBottom = $('#__SUBMITBUTTONS__-div .btn-group');
         var $buttonsTop = $('#formSaveTip .btn-group');
 
-        // Storing filtered buttons markup.
+        // Storing original buttons markup.
         var originalBottom = $buttonsBottom.html();
         var originalTop = $buttonsTop.html();
 
+        /**
+         * Filters buttons according to the RFIO criteria.
+         */
         function filterButtons() {
             var $buttons = $('button[name="submit-btn-savenextform"]');
 
@@ -102,11 +105,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
+        /**
+         * Restores the original buttons.
+         */
         function resetButtons() {
             $buttonsBottom.html(originalBottom);
             $buttonsTop.html(originalTop);
-
-            $('a[onclick="dataEntrySubmit(\'submit-btn-savenextform\');return false;"]').show();
         }
 
         if ($complete.val() !== FORM_STATUS_COMPLETE) {
