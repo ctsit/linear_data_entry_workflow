@@ -57,9 +57,13 @@
         {
             "key": "forms-exceptions",
             "name": "Forms Exceptions",
-            "required": false,
             "type": "form-list",
             "repeatable": true
+        },
+        {
+            "key": "hide-next-record-button",
+            "name": "Hide \"Save & Go To Next Record\" button",
+            "type": "checkbox"
         }
     ]
 }

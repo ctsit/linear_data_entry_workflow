@@ -67,28 +67,71 @@ document.addEventListener('DOMContentLoaded', function() {
      * Hide "Save and Continue to Next Form" buttons.
      */
     function hideNextFormButtons() {
-        var $buttons = $('button[name="submit-btn-savenextform"]');
+        const FORM_STATUS_COMPLETE = '2';
 
-        // Check if buttons are outside the dropdown menu.
-        if ($buttons.length !== 0) {
-            $.each($buttons, function(index, button) {
-                // Get first button in dropdown-menu.
-                var replacement = $(button).siblings('.dropdown-menu').find('a')[0];
+        var $complete = $('[name="' + settings.instrument + '_complete"]');
+        var $buttonsBottom = $('#__SUBMITBUTTONS__-div .btn-group');
+        var $buttonsTop = $('#formSaveTip .btn-group');
 
-                // Modify button to behave like $replacement.
-                button.id = replacement.id;
-                button.name = replacement.name;
-                button.onclick = replacement.onclick;
-                button.innerHTML = replacement.innerHTML;
-
-                // Get rid of replacement.
-                $(replacement).remove();
-
-            });
+        // Checking if "Save & Go To Next Record" button is configured to be
+        // hidden.
+        if (settings.hideNextRecordButton) {
+            removeButtons('savenextrecord');
         }
-        else {
-            // Disable button inside the dropdown menu.
-            $('a[onclick="dataEntrySubmit(\'submit-btn-savenextform\');return false;"]').hide();
+
+        // Storing original buttons markup.
+        var originalBottom = $buttonsBottom.html();
+        var originalTop = $buttonsTop.html();
+
+        // Checking initial form status.
+        if ($complete.val() !== FORM_STATUS_COMPLETE) {
+            removeButtons('savenextform');
+        }
+
+        // Dinamically remove or restore buttons according with form status.
+        $complete.change(function() {
+            if ($(this).val() === FORM_STATUS_COMPLETE) {
+                resetButtons();
+            }
+            else {
+                removeButtons('savenextform');
+            }
+        });
+
+        /**
+         * Removes the given submit buttons set.
+         */
+        function removeButtons(buttonName) {
+            var $buttons = $('button[name="submit-btn-' + buttonName + '"]');
+
+            // Check if buttons are outside the dropdown menu.
+            if ($buttons.length !== 0) {
+                $.each($buttons, function(index, button) {
+                    // Get first button in dropdown-menu.
+                    var replacement = $(button).siblings('.dropdown-menu').find('a')[0];
+
+                    // Modify button to behave like $replacement.
+                    button.id = replacement.id;
+                    button.name = replacement.name;
+                    button.onclick = replacement.onclick;
+                    button.innerHTML = replacement.innerHTML;
+
+                    // Get rid of replacement.
+                    $(replacement).remove();
+                });
+            }
+            else {
+                // Disable button inside the dropdown menu.
+                $('a[onclick="dataEntrySubmit(\'submit-btn-' + buttonName + '\');return false;"]').hide();
+            }
+        }
+
+        /**
+         * Restores the original buttons.
+         */
+        function resetButtons() {
+            $buttonsBottom.html(originalBottom);
+            $buttonsTop.html(originalTop);
         }
     }
 });

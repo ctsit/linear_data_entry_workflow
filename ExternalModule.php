@@ -126,6 +126,8 @@ class ExternalModule extends AbstractExternalModule {
         $settings = array(
             'formsAccess' => $forms_access,
             'location' => $location,
+            'instrument' => $instrument,
+            'hideNextRecordButton' => $this->getProjectSetting('hide-next-record-button', $project_id),
         );
 
         $this->setJsSetting('rfio', $settings);
