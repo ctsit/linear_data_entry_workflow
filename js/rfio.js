@@ -73,15 +73,36 @@ document.addEventListener('DOMContentLoaded', function() {
         var $buttonsBottom = $('#__SUBMITBUTTONS__-div .btn-group');
         var $buttonsTop = $('#formSaveTip .btn-group');
 
+        // Checking if "Save & Go To Next Record" button is configured to be
+        // hidden.
+        if (settings.hideNextRecordButton) {
+            removeButtons('savenextrecord');
+        }
+
         // Storing original buttons markup.
         var originalBottom = $buttonsBottom.html();
         var originalTop = $buttonsTop.html();
 
+        // Checking initial form status.
+        if ($complete.val() !== FORM_STATUS_COMPLETE) {
+            removeButtons('savenextform');
+        }
+
+        // Dinamically remove or restore buttons according with form status.
+        $complete.change(function() {
+            if ($(this).val() === FORM_STATUS_COMPLETE) {
+                resetButtons();
+            }
+            else {
+                removeButtons('savenextform');
+            }
+        });
+
         /**
-         * Filters buttons according to the RFIO criteria.
+         * Removes the given submit buttons set.
          */
-        function filterButtons() {
-            var $buttons = $('button[name="submit-btn-savenextform"]');
+        function removeButtons(buttonName) {
+            var $buttons = $('button[name="submit-btn-' + buttonName + '"]');
 
             // Check if buttons are outside the dropdown menu.
             if ($buttons.length !== 0) {
@@ -101,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             else {
                 // Disable button inside the dropdown menu.
-                $('a[onclick="dataEntrySubmit(\'submit-btn-savenextform\');return false;"]').hide();
+                $('a[onclick="dataEntrySubmit(\'submit-btn-' + buttonName + '\');return false;"]').hide();
             }
         }
 
@@ -112,18 +133,5 @@ document.addEventListener('DOMContentLoaded', function() {
             $buttonsBottom.html(originalBottom);
             $buttonsTop.html(originalTop);
         }
-
-        if ($complete.val() !== FORM_STATUS_COMPLETE) {
-            filterButtons();
-        }
-
-        $complete.change(function() {
-            if ($(this).val() === FORM_STATUS_COMPLETE) {
-                resetButtons();
-            }
-            else {
-                filterButtons();
-            }
-        });
     }
 });
