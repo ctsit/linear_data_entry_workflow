@@ -4,11 +4,11 @@ This module forces a linear data entry workflow across REDCap forms and events. 
 
 
 ## Prerequisites
-- [REDCap Modules](https://github.com/vanderbilt/redcap-external-modules)
+- REDCap >= 8.0.0 (for versions < 8.0.0, [REDCap Modules](https://github.com/vanderbilt/redcap-external-modules) is required).
 
 
 ## Installation
-- Clone this repo into to `<redcap-root>/modules/linear_data_entry_workflow_v2.0.0`.
+- Clone this repo into to `<redcap-root>/modules/linear_data_entry_workflow_v2.0`.
 - Go to **Control Center > Manage External Modules** and enable Linear Data Entry Workflow.
 - For each project you want to use this module, go to the project home page, click on **Manage External Modules** link, and then enable Linear Data Entry Workflow for that project.
 
