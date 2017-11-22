@@ -1,7 +1,7 @@
 {
     "name": "Linear Data Entry Workflow",
     "namespace": "LinearDataEntryWorkflow\\ExternalModule",
-    "description": "This extension forces a linear data entry workflow across REDCap forms and events.",
+    "description": "This module forces a linear data entry workflow across REDCap forms and events. Forms must be filled from top to bottom and left to right. All required fields must be filled and completed button form state must be checked before the next form is made accessible.",
     "permissions": [
         "hook_every_page_top",
         "hook_data_entry_form"
