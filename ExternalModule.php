@@ -8,6 +8,7 @@ namespace LinearDataEntryWorkflow\ExternalModule;
 
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
+use REDCap;
 
 /**
  * ExternalModule class for Linear Data Entry Workflow.
@@ -38,7 +39,7 @@ class ExternalModule extends AbstractExternalModule {
                 $location = str_replace('.php', '', str_replace('DataEntry/', '', PAGE));
                 $arm = empty($_GET['arm']) ? 1 : $_GET['arm'];
 
-                $this->loadRFIO($project_id, $location, $arm, $record);
+                $this->loadRFIO($location, $arm, $record);
                 break;
         }
     }
@@ -46,33 +47,35 @@ class ExternalModule extends AbstractExternalModule {
     /**
      * @inheritdoc
      */
-    function hook_data_entry_form($project_id, $record, $instrument, $event_id, $group_id) {
+    function hook_data_entry_form($project_id, $record = null, $instrument, $event_id, $group_id = null) {
         global $Proj;
 
         if (!$record) {
             $record = $_GET['id'];
         }
 
-        $this->loadRFIO($project_id, 'data_entry_form', $Proj->eventInfo[$event_id]['arm_num'], $record, $event_id, $instrument);
+        $this->loadRFIO('data_entry_form', $Proj->eventInfo[$event_id]['arm_num'], $record, $event_id, $instrument);
         $this->loadFDEC($instrument);
     }
 
     /**
      * Loads RFIO (review fields in order) feature.
      *
-     * @param int $project_id
-     *   The project ID.
-     * @param int $record
-     *   The data entry record ID.
      * @param string $location
      *   The location to apply RFIO. Can be:
      *   - data_entry_form
      *   - record_home
      *   - record_status_dashboard
+     * @param string $arm
+     *   The arm name.
+     * @param int $record
+     *   The data entry record ID.
      * @param int $event_id
      *   The event ID. Only required when $location = "data_entry_form".
+     * @param string $instrument
+     *   The form/instrument name.
      */
-    protected function loadRFIO($project_id, $location, $arm, $record = null, $event_id = null, $instrument = null) {
+    protected function loadRFIO($location, $arm, $record = null, $event_id = null, $instrument = null) {
         // Proj is a REDCap var used to pass information about the current project.
         global $Proj;
 
@@ -82,14 +85,22 @@ class ExternalModule extends AbstractExternalModule {
             $fields[$form_name] = $form_name . '_complete';
         }
 
-        $completed_forms = \REDCap::getData($project_id, 'array', $record, $fields);
+        $completed_forms = REDCap::getData($Proj->project_id, 'array', $record, $fields);
         if ($record && !isset($completed_forms[$record])) {
             // Handling new record case.
             $completed_forms = array($record => array());
         }
 
-        if (!$exceptions = $this->getProjectSetting('forms-exceptions', $project_id)) {
+        if (!$exceptions = $this->getProjectSetting('forms-exceptions', $Proj->project_id)) {
             $exceptions = array();
+        }
+
+        // Handling possible conflicts with CTSIT's Form Render Skip Logic.
+        $prefix = 'form_render_skip_logic';
+        $enabled_modules = ExternalModules::getEnabledModules($Proj->project_id);
+        if (isset($enabled_modules[$prefix])) {
+            $frsl = ExternalModules::getModuleInstance($prefix, $enabled_modules[$prefix]);
+            $frsl_forms_access = $frsl->getFormsAccessMatrix($arm, $record);
         }
 
         // Building forms access matrix.
@@ -108,10 +119,14 @@ class ExternalModule extends AbstractExternalModule {
                         continue;
                     }
 
+                    if (isset($frsl_forms_access) && !$frsl_forms_access[$id][$event][$form]) {
+                        continue;
+                    }
+
                     if (!$prev_form_completed) {
                         if ($id == $record && $event == $event_id && $instrument == $form) {
                             // Access denied to the current page.
-                            redirect(APP_PATH_WEBROOT . 'DataEntry/record_home.php?pid=' . $project_id . '&id=' . $record . '&arm=' . $arm);
+                            redirect(APP_PATH_WEBROOT . 'DataEntry/record_home.php?pid=' . $Proj->project_id . '&id=' . $record . '&arm=' . $arm);
                         }
 
                         $forms_access[$id][$event][$form] = false;
@@ -127,7 +142,7 @@ class ExternalModule extends AbstractExternalModule {
             'formsAccess' => $forms_access,
             'location' => $location,
             'instrument' => $instrument,
-            'hideNextRecordButton' => $this->getProjectSetting('hide-next-record-button', $project_id),
+            'hideNextRecordButton' => $this->getProjectSetting('hide-next-record-button', $Proj->project_id),
         );
 
         $this->setJsSetting('rfio', $settings);
