@@ -1,0 +1,69 @@
+{
+    "name": "Linear Data Entry Workflow",
+    "namespace": "LinearDataEntryWorkflow\\ExternalModule",
+    "description": "This module forces a linear data entry workflow across REDCap forms and events. Forms must be filled from top to bottom and left to right. All required fields must be filled and completed button form state must be checked before the next form is made accessible.",
+    "permissions": [
+        "hook_every_page_top",
+        "hook_data_entry_form"
+    ],
+    "authors": [
+        {
+            "name": "Philip Chase",
+            "email": "pbc@ufl.edu",
+            "institution": "CTS-IT - University of Florida"
+        },
+        {
+            "name": "Taryn Stoffs",
+            "email": "tls@ufl.edu",
+            "institution": "CTS-IT - University of Florida"
+        },
+        {
+            "name": "Surya Prasanna",
+            "email": "suryayalla@ufl.edu",
+            "institution": "CTS-IT - University of Florida"
+        },
+        {
+            "name": "Prasad Lanka",
+            "email": "planka@ufl.edu",
+            "institution": "CTS-IT - University of Florida"
+        },
+        {
+            "name": "Dileep Rajput",
+            "email": "rajputd@ufl.edu",
+            "institution": "CTS-IT - University of Florida"
+        },
+        {
+            "name": "Stewart Wehmeyer",
+            "email": "swehmeyer@ufl.edu",
+            "institution": "CTS-IT - University of Florida"
+        },
+        {
+            "name": "Tiago Bember",
+            "email": "tbembersimeao@ufl.edu",
+            "institution": "CTS-IT - University of Florida"
+        },
+        {
+            "name": "Mike Conlon, Ph.D.",
+            "email": "mconlon@ufl.edu",
+            "institution": "University of Florida"
+        },
+        {
+            "name": "Carl J Pepine, M.D., MACC",
+            "email": "",
+            "institution": "University of Florida"
+        }
+    ],
+    "project-settings": [
+        {
+            "key": "forms-exceptions",
+            "name": "Forms Exceptions",
+            "type": "form-list",
+            "repeatable": true
+        },
+        {
+            "key": "hide-next-record-button",
+            "name": "Hide \"Save & Go To Next Record\" button",
+            "type": "checkbox"
+        }
+    ]
+}
