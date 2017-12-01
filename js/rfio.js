@@ -67,6 +67,10 @@ document.addEventListener('DOMContentLoaded', function() {
      * Hide "Save and Continue to Next Form" buttons.
      */
     function hideNextFormButtons() {
+        if (settings.isLastForm) {
+            return;
+        }
+
         const FORM_STATUS_COMPLETE = '2';
 
         var $complete = $('[name="' + settings.instrument + '_complete"]');
