@@ -126,6 +126,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             else {
                 // Disable button inside the dropdown menu.
+                // Obs.: yes, this is a weird selector - "#" prefix is not being
+                // used - but this approach is needed on this page because there
+                // are multiple DOM elements with the same ID - which is
+                // totally wrong.
                 $('a[id="submit-btn-' + buttonName + '"]').hide();
             }
         }
