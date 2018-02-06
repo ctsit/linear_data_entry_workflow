@@ -5,15 +5,28 @@ document.addEventListener('DOMContentLoaded', function() {
     // Loading settings.
     var settings = linearDataEntryWorkflow.fdec;
 
+    // Getting form status element.
+    var $formStatus = $('#questiontable select[name="' + settings.instrument + '_complete"]');
+
     // Overriding message that says that wrong values are admissible.
     $('#valtext_divs #valtext_rangesoft2').text('You may wish to verify.');
+
+    // Overriding submit callbacks according to our needs.
+    overrideSubmitCallbacks();
+
+    $formStatus.change(function() {
+        if (!settings.statusesBypass.includes($formStatus.val())) {
+            // Submit callbacks need to be overriden if form status changes.
+            overrideSubmitCallbacks();
+        }
+    });
 
     /**
      * Form validation callback.
      */
     function formValidate(elements_validate, required_fields_selector = '', statuses_bypass = []) {
         // Checking if current form status can bypass validation.
-        if (statuses_bypass.length && statuses_bypass.includes($('#questiontable select[name="' + settings.instrument + '_complete"]').val())) {
+        if (statuses_bypass.length && statuses_bypass.includes($formStatus.val())) {
             return true;
         }
 
@@ -86,20 +99,25 @@ document.addEventListener('DOMContentLoaded', function() {
         return validated;
     }
 
-    $('[id^="submit-btn-save"]').each(function() {
-        // Storing onclick callback of the submit button.
-        $(this).data('onclick', this.onclick);
+    /**
+     * Overrides submit callbacks in order to add extra validation.
+     */
+    function overrideSubmitCallbacks() {
+        $('[id^="submit-btn-save"]').each(function() {
+            // Storing onclick callback of the submit button.
+            $(this).data('onclick', this.onclick);
 
-        // Overriding onclick callback of submit buttons.
-        this.onclick = function(event) {
-            if (!formValidate(true, settings.requiredFieldsSelector, settings.statusesBypass)) {
-                return false;
-            }
+            // Overriding onclick callback of submit buttons.
+            this.onclick = function(event) {
+                if (!formValidate(true, settings.requiredFieldsSelector, settings.statusesBypass)) {
+                    return false;
+                }
 
-            // Go ahead with normal procedure.
-            $(this).data('onclick').call(this, event || window.event);
-        };
-    });
+                // Go ahead with normal procedure.
+                $(this).data('onclick').call(this, event || window.event);
+            };
+        });
+    }
 
     // Handling 'Stay on Page' popup, which opens the door for wrong/incomplete submissions.
     $('#stayOnPageReminderDialog').on('dialogopen', function(event, ui) {
