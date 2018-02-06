@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             else {
                 // Disable button inside the dropdown menu.
-                $('a[onclick="dataEntrySubmit(\'submit-btn-' + buttonName + '\');return false;"]').hide();
+                $('a[id="submit-btn-' + buttonName + '"]').hide();
             }
         }
 
