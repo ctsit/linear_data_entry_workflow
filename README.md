@@ -40,3 +40,7 @@ For example, if the field 'Age' requires a number from 0 to 99 and the user ente
 
 ### Adding exceptions
 Linear Data Entry Workflow can be configured to ignore certain forms. To do that, access **Manage External Modules** section of your project, click on Linear Data Entry Workflow's configure button, and fill **Forms Exceptions** field.
+
+### Supressing "Save & Go To Next Record"
+
+In a clinical data collection work flow the study coordinator is likely working with only one research participant at a time. In this case the "Save & Go To Next Record" button might be a distraction. This button can be hidden via the modules project-level configuration option _Hide "Save & Go To Next Record" button_
