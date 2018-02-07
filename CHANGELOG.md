@@ -3,6 +3,15 @@ All notable changes to the REDCap Linear Data Entry Workflow module will be docu
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [2.1.1] - 2018-02-07
+### Changed
+- Forcing submit callbacks override when form status field is changed. (Tiago Bember Simeao)
+- Improving delete buttons accuracy. (Tiago Bember Simeao)
+- Mention form exceptions and suppressing 'Save & Go To Next Record' in README (Philip Chase)
+- Ignore hide/show buttons logic on the last instrument. (Tiago Bember Simeao)
+- Bring documentation, attribution and versioning up to CTS-IT's current standards (Philip Chase)
+
+
 ## [2.1] - 2017-11-22
 ### Added
 - Avoiding conflicts with Form Render Skip Logic module. (Tiago Bember Simeao)
