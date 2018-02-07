@@ -142,6 +142,7 @@ class ExternalModule extends AbstractExternalModule {
             'formsAccess' => $forms_access,
             'location' => $location,
             'instrument' => $instrument,
+            'isLastForm' => $Proj->lastFormName == $instrument,
             'hideNextRecordButton' => $this->getProjectSetting('hide-next-record-button', $Proj->project_id),
         );
 

@@ -67,6 +67,10 @@ document.addEventListener('DOMContentLoaded', function() {
      * Hide "Save and Continue to Next Form" buttons.
      */
     function hideNextFormButtons() {
+        if (settings.isLastForm) {
+            return;
+        }
+
         const FORM_STATUS_COMPLETE = '2';
 
         var $complete = $('[name="' + settings.instrument + '_complete"]');
@@ -122,7 +126,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             else {
                 // Disable button inside the dropdown menu.
-                $('a[onclick="dataEntrySubmit(\'submit-btn-' + buttonName + '\');return false;"]').hide();
+                // Obs.: yes, this is a weird selector - "#" prefix is not being
+                // used - but this approach is needed on this page because there
+                // are multiple DOM elements with the same ID - which is
+                // totally wrong.
+                $('a[id="submit-btn-' + buttonName + '"]').hide();
             }
         }
 
