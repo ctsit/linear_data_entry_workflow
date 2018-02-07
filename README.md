@@ -4,10 +4,14 @@ This module forces a linear data entry workflow across REDCap forms and events. 
 
 
 ## Prerequisites
-- REDCap >= 8.0.0 (for versions < 8.0.0, [REDCap Modules](https://github.com/vanderbilt/redcap-external-modules) is required).
+- REDCap >= 8.0.3 (for versions < 8.0.3, [REDCap Modules](https://github.com/vanderbilt/redcap-external-modules) is required).
 
 
-## Installation
+## Easy Installation
+- Obtain this module from the Consortium [REDCap Repo] (https://redcap.vanderbilt.edu/consortium/modules/index.php) from the control center.
+
+
+## Manual Installation
 - Clone this repo into to `<redcap-root>/modules/linear_data_entry_workflow_v<version_number>`.
 - Go to **Control Center > Manage External Modules** and enable Linear Data Entry Workflow.
 - For each project you want to use this module, go to the project home page, click on **Manage External Modules** link, and then enable Linear Data Entry Workflow for that project.
@@ -21,7 +25,7 @@ This feature operates under the assumption that only complete forms and the imme
 
 For example, if you have 3 forms, X, Y, and Z - in that order, and only form X has been completed, then the user can access form X and form Y, but not form Z. Form Z will become available after form Y is complete.
 
-This feature acts in 3 pages:
+This feature changes REDCap's behavior on 3 pages:
 
 1. **Record Status Dashboard**. Ensures the record status dashboard only reveals forms that should be accessible. It goes through each record, and disables links to all forms that are not complete or immediately following a complete form. If there are multiple events, forms are evaluated one event at a time, with the assumption that each event must be completed before any forms on the next event can be accessed. Continuing with the above example: if forms X, Y, and Z are designated for both a January and February event, January's form Z must be complete before the user can fill out February X.
 2. **Record Home**. Performs much the same function as described above, but on an individual record's home page. This means that each event is evaluated separately, and the form immediately ensuing the last complete form is the last accessible form.
@@ -36,3 +40,8 @@ For example, if the field 'Age' requires a number from 0 to 99 and the user ente
 
 ### Adding exceptions
 Linear Data Entry Workflow can be configured to ignore certain forms. To do that, access **Manage External Modules** section of your project, click on Linear Data Entry Workflow's configure button, and fill **Forms Exceptions** field.
+
+
+### Suppressing "Save & Go To Next Record"
+
+In a clinical data collection workflow the study coordinator is likely working with only one research participant at a time. In this case the "Save & Go To Next Record" button might be a distraction. This button can be hidden via the modules project-level configuration option _Hide "Save & Go To Next Record" button_
