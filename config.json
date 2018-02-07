@@ -65,5 +65,8 @@
             "name": "Hide \"Save & Go To Next Record\" button",
             "type": "checkbox"
         }
-    ]
+    ],
+    "compatibility": {
+        "redcap-version-min": "8.0.3"
+    }
 }
