@@ -104,6 +104,11 @@ document.addEventListener('DOMContentLoaded', function() {
      */
     function overrideSubmitCallbacks() {
         $('[id^="submit-btn-save"]').each(function() {
+            if ($(this).data('onclick')) {
+                // Checking if the submit callback has been overriden already.
+                return;
+            }
+
             // Storing onclick callback of the submit button.
             $(this).data('onclick', this.onclick);
 
@@ -114,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 // Go ahead with normal procedure.
-                $(this).data('onclick').call(this, event || window.event);
+                return $(this).data('onclick').call(this, event || window.event);
             };
         });
     }
