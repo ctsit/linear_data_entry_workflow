@@ -4,7 +4,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     switch (settings.location) {
         case 'data_entry_form':
-            hideNextFormButtons();
+            if (!settings.isLastForm && !settings.isException) {
+                hideNextFormButtons(settings.instrument, settings.hideNextRecordButton);
+            }
+
             $links = $('.formMenuList a');
             break;
         case 'record_home':
@@ -66,20 +69,15 @@ document.addEventListener('DOMContentLoaded', function() {
     /**
      * Hide "Save and Continue to Next Form" buttons.
      */
-    function hideNextFormButtons() {
-        if (settings.isLastForm) {
-            return;
-        }
-
+    function hideNextFormButtons(instrument, hideNextRecordButton) {
         const FORM_STATUS_COMPLETE = '2';
 
-        var $complete = $('[name="' + settings.instrument + '_complete"]');
+        var $complete = $('[name="' + instrument + '_complete"]');
         var $buttonsBottom = $('#__SUBMITBUTTONS__-div .btn-group');
         var $buttonsTop = $('#formSaveTip .btn-group');
 
-        // Checking if "Save & Go To Next Record" button is configured to be
-        // hidden.
-        if (settings.hideNextRecordButton) {
+        if (hideNextRecordButton) {
+            // Hiding "Save & Go To Next Record" button.
             removeButtons('savenextrecord');
         }
 
@@ -100,6 +98,21 @@ document.addEventListener('DOMContentLoaded', function() {
             else {
                 removeButtons('savenextform');
             }
+        });
+
+        // Handling "Ignore and go to next form" button on required fields
+        // dialog.
+        $('#reqPopup').on('dialogopen', function(event, ui) {
+            var buttons = $(this).dialog('option', 'buttons');
+
+            $.each(buttons, function(i, button) {
+                if (button.name === 'Ignore and go to next form') {
+                    delete buttons[i];
+                    return false;
+                }
+            });
+
+            $(this).dialog('option', 'buttons', buttons);
         });
 
         /**
