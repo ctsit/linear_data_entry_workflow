@@ -157,12 +157,14 @@ class ExternalModule extends AbstractExternalModule {
                 $settings['forceButtonsDisplay'] = 'show';
             }
             elseif ($settings['isException']) {
-                if (!$forms_access[$record][$event_id][$next_form]) {
-                    // Handling the case where the current form is an exception
-                    // and the next one is not accessible, so we need to hide
-                    // the buttons no matter the form status.
-                    $settings['forceButtonsDisplay'] = 'hide';
-                }
+                // Handling 2 cases for exception forms:
+                // - Case A: the next form is not accessible, so we need to keep
+                //   the buttons hidden, no matter if form gets shifted to
+                //   Complete status.
+                // - Case B: the next form is accessible, so we need to keep the
+                //   buttons visible, no matter if form gets shifted to a non
+                //   Completed status.
+                $settings['forceButtonsDisplay'] = $forms_access[$record][$event_id][$next_form] ? 'show' : 'hide';
             }
         }
 
