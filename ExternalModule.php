@@ -142,6 +142,7 @@ class ExternalModule extends AbstractExternalModule {
             'formsAccess' => $forms_access,
             'location' => $location,
             'instrument' => $instrument,
+            'isException' => in_array($instrument, $exceptions),
             'forceButtonsDisplay' => $Proj->lastFormName == $instrument ? 'show' : false,
             'hideNextRecordButton' => $this->getProjectSetting('hide-next-record-button', $Proj->project_id),
         );
@@ -155,7 +156,7 @@ class ExternalModule extends AbstractExternalModule {
                 // so we need to show the buttons no matter the form status.
                 $settings['forceButtonsDisplay'] = 'show';
             }
-            elseif (in_array($instrument, $exceptions)) {
+            elseif ($settings['isException']) {
                 if (!$forms_access[$record][$event_id][$next_form]) {
                     // Handling the case where the current form is an exception
                     // and the next one is not accessible, so we need to hide

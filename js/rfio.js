@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
             var $buttonsBottom = $('#__SUBMITBUTTONS__-div .btn-group');
             var $buttonsTop = $('#formSaveTip .btn-group');
 
-            if (settings.hideNextRecordButton) {
+            if (settings.hideNextRecordButton && !settings.isException) {
                 // Hiding "Save & Go To Next Record" buttons.
                 removeButtons('savenextrecord');
             }
