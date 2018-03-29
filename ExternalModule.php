@@ -142,9 +142,31 @@ class ExternalModule extends AbstractExternalModule {
             'formsAccess' => $forms_access,
             'location' => $location,
             'instrument' => $instrument,
-            'isLastForm' => $Proj->lastFormName == $instrument,
+            'isException' => in_array($instrument, $exceptions),
+            'forceButtonsDisplay' => $Proj->lastFormName == $instrument ? 'show' : false,
             'hideNextRecordButton' => $this->getProjectSetting('hide-next-record-button', $Proj->project_id),
         );
+
+        if (!$settings['forceButtonsDisplay']) {
+            $i = array_search($instrument, $Proj->eventsForms[$event_id]);
+            $next_form = $Proj->eventsForms[$event_id][$i + 1];
+
+            if (in_array($next_form, $exceptions)) {
+                // Handling the case where the next form is an exception,
+                // so we need to show the buttons no matter the form status.
+                $settings['forceButtonsDisplay'] = 'show';
+            }
+            elseif ($settings['isException']) {
+                // Handling 2 cases for exception forms:
+                // - Case A: the next form is not accessible, so we need to keep
+                //   the buttons hidden, no matter if form gets shifted to
+                //   Complete status.
+                // - Case B: the next form is accessible, so we need to keep the
+                //   buttons visible, no matter if form gets shifted to a non
+                //   Completed status.
+                $settings['forceButtonsDisplay'] = $forms_access[$record][$event_id][$next_form] ? 'show' : 'hide';
+            }
+        }
 
         $this->setJsSetting('rfio', $settings);
         $this->includeJs('js/rfio.js');

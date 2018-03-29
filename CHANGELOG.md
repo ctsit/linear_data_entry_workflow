@@ -3,6 +3,11 @@ All notable changes to the REDCap Linear Data Entry Workflow module will be docu
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [2.1.2] - 2018-03-29
+### Changed
+- Fixing infinite call stack error on form submit Issue #26. (Tiago Bember Simeao)
+
+
 ## [2.1.1] - 2018-02-07
 ### Changed
 - Forcing submit callbacks override when form status field is changed. (Tiago Bember Simeao)

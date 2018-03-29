@@ -4,7 +4,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     switch (settings.location) {
         case 'data_entry_form':
-            hideNextFormButtons();
+            var $buttonsBottom = $('#__SUBMITBUTTONS__-div .btn-group');
+            var $buttonsTop = $('#formSaveTip .btn-group');
+
+            if (settings.hideNextRecordButton && !settings.isException) {
+                // Hiding "Save & Go To Next Record" buttons.
+                removeButtons('savenextrecord');
+            }
+
+            if (settings.forceButtonsDisplay !== 'show') {
+                // Hiding "Save & Go to Next Form" buttons.
+                hideNextFormButtons(settings.instrument, settings.forceButtonsDisplay === 'hide');
+            }
+
             $links = $('.formMenuList a');
             break;
         case 'record_home':
@@ -64,24 +76,31 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /**
-     * Hide "Save and Continue to Next Form" buttons.
+     * Hide "Save and Go to Next Form" buttons.
      */
-    function hideNextFormButtons() {
-        if (settings.isLastForm) {
+    function hideNextFormButtons(instrument, force = false) {
+        // Handling "Ignore and go to next form" button on required fields
+        // dialog.
+        $('#reqPopup').on('dialogopen', function(event, ui) {
+            var buttons = $(this).dialog('option', 'buttons');
+
+            $.each(buttons, function(i, button) {
+                if (button.name === 'Ignore and go to next form') {
+                    delete buttons[i];
+                    return false;
+                }
+            });
+
+            $(this).dialog('option', 'buttons', buttons);
+        });
+
+        if (force) {
+            removeButtons('savenextform');
             return;
         }
 
         const FORM_STATUS_COMPLETE = '2';
-
-        var $complete = $('[name="' + settings.instrument + '_complete"]');
-        var $buttonsBottom = $('#__SUBMITBUTTONS__-div .btn-group');
-        var $buttonsTop = $('#formSaveTip .btn-group');
-
-        // Checking if "Save & Go To Next Record" button is configured to be
-        // hidden.
-        if (settings.hideNextRecordButton) {
-            removeButtons('savenextrecord');
-        }
+        var $complete = $('[name="' + instrument + '_complete"]');
 
         // Storing original buttons markup.
         var originalBottom = $buttonsBottom.html();
@@ -95,51 +114,45 @@ document.addEventListener('DOMContentLoaded', function() {
         // Dinamically remove or restore buttons according with form status.
         $complete.change(function() {
             if ($(this).val() === FORM_STATUS_COMPLETE) {
-                resetButtons();
+                // Restoring buttons.
+                $buttonsBottom.html(originalBottom);
+                $buttonsTop.html(originalTop);
             }
             else {
                 removeButtons('savenextform');
             }
         });
+    }
 
-        /**
-         * Removes the given submit buttons set.
-         */
-        function removeButtons(buttonName) {
-            var $buttons = $('button[name="submit-btn-' + buttonName + '"]');
+    /**
+     * Removes the given submit buttons set.
+     */
+    function removeButtons(buttonName) {
+        var $buttons = $('button[name="submit-btn-' + buttonName + '"]');
 
-            // Check if buttons are outside the dropdown menu.
-            if ($buttons.length !== 0) {
-                $.each($buttons, function(index, button) {
-                    // Get first button in dropdown-menu.
-                    var replacement = $(button).siblings('.dropdown-menu').find('a')[0];
+        // Check if buttons are outside the dropdown menu.
+        if ($buttons.length !== 0) {
+            $.each($buttons, function(index, button) {
+                // Get first button in dropdown-menu.
+                var replacement = $(button).siblings('.dropdown-menu').find('a')[0];
 
-                    // Modify button to behave like $replacement.
-                    button.id = replacement.id;
-                    button.name = replacement.name;
-                    button.onclick = replacement.onclick;
-                    button.innerHTML = replacement.innerHTML;
+                // Modify button to behave like $replacement.
+                button.id = replacement.id;
+                button.name = replacement.name;
+                button.onclick = replacement.onclick;
+                button.innerHTML = replacement.innerHTML;
 
-                    // Get rid of replacement.
-                    $(replacement).remove();
-                });
-            }
-            else {
-                // Disable button inside the dropdown menu.
-                // Obs.: yes, this is a weird selector - "#" prefix is not being
-                // used - but this approach is needed on this page because there
-                // are multiple DOM elements with the same ID - which is
-                // totally wrong.
-                $('a[id="submit-btn-' + buttonName + '"]').hide();
-            }
+                // Get rid of replacement.
+                $(replacement).remove();
+            });
         }
-
-        /**
-         * Restores the original buttons.
-         */
-        function resetButtons() {
-            $buttonsBottom.html(originalBottom);
-            $buttonsTop.html(originalTop);
+        else {
+            // Disable button inside the dropdown menu.
+            // Obs.: yes, this is a weird selector - "#" prefix is not being
+            // used - but this approach is needed on this page because there
+            // are multiple DOM elements with the same ID - which is
+            // totally wrong.
+            $('a[id="submit-btn-' + buttonName + '"]').hide();
         }
     }
 });
