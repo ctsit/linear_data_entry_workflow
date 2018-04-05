@@ -133,7 +133,20 @@ class ExternalModule extends AbstractExternalModule {
                         continue;
                     }
 
-                    $prev_form_completed = !empty($data[$event]) && !empty($data[$event][$fields[$form]]) && $data[$event][$fields[$form]] == 2;
+                    if (empty($data['repeat_instances'][$event][$form])) {
+                        $prev_form_completed = !empty($data[$event][$fields[$form]]) && $data[$event][$fields[$form]] == 2;
+                        continue;
+                    }
+
+                    // Repeat instances case.
+                    foreach ($data['repeat_instances'][$event][$form] as $instance) {
+                        if (empty($instance[$fields[$form]]) || $instance[$fields[$form]] != 2) {
+                            // Block access to next instrument if an instance is
+                            // not completed.
+                            $prev_form_completed = false;
+                            break;
+                        }
+                    }
                 }
             }
         }
