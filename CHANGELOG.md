@@ -2,6 +2,11 @@
 All notable changes to the REDCap Linear Data Entry Workflow module will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.2.0] - 2018-05-03
+### Changed
+- Preventing false alarms/errors on redirect. (Tiago Bember Simeao)
+- Handling repeated forms. (Tiago Bember Simeao)
+
 
 ## [2.1.2] - 2018-03-29
 ### Changed
