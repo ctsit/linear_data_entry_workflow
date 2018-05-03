@@ -54,8 +54,9 @@ class ExternalModule extends AbstractExternalModule {
             $record = $_GET['id'];
         }
 
-        $this->loadRFIO('data_entry_form', $Proj->eventInfo[$event_id]['arm_num'], $record, $event_id, $instrument);
-        $this->loadFDEC($instrument);
+        if ($this->loadRFIO('data_entry_form', $Proj->eventInfo[$event_id]['arm_num'], $record, $event_id, $instrument)) {
+            $this->loadFDEC($instrument);
+        }
     }
 
     /**
@@ -74,6 +75,10 @@ class ExternalModule extends AbstractExternalModule {
      *   The event ID. Only required when $location = "data_entry_form".
      * @param string $instrument
      *   The form/instrument name.
+     *
+     * @return bool
+     *   TRUE if the current user has access to the current form;
+     *   FALSE if the user is going to be redirected out the page.
      */
     protected function loadRFIO($location, $arm, $record = null, $event_id = null, $instrument = null) {
         // Proj is a REDCap var used to pass information about the current project.
@@ -126,7 +131,8 @@ class ExternalModule extends AbstractExternalModule {
                     if (!$prev_form_completed) {
                         if ($id == $record && $event == $event_id && $instrument == $form) {
                             // Access denied to the current page.
-                            redirect(APP_PATH_WEBROOT . 'DataEntry/record_home.php?pid=' . $Proj->project_id . '&id=' . $record . '&arm=' . $arm);
+                            $this->redirect(APP_PATH_WEBROOT . 'DataEntry/record_home.php?pid=' . $Proj->project_id . '&id=' . $record . '&arm=' . $arm);
+                            return false;
                         }
 
                         $forms_access[$id][$event][$form] = false;
@@ -183,6 +189,8 @@ class ExternalModule extends AbstractExternalModule {
 
         $this->setJsSetting('rfio', $settings);
         $this->includeJs('js/rfio.js');
+
+        return true;
     }
 
     /**
@@ -240,6 +248,26 @@ class ExternalModule extends AbstractExternalModule {
 
         $this->setJsSetting('fdec', $settings);
         $this->includeJs('js/fdec.js');
+    }
+
+    /**
+     * Redirects user to the given URL.
+     *
+     * This function basically replicates redirect() function, but since EM
+     * throws an error when an exit() is called, we need to adapt it to the
+     * EM way of exiting.
+     */
+    protected function redirect($url) {
+        if (headers_sent()) {
+            // If contents already output, use javascript to redirect instead.
+            echo '<script>window.location.href="' . $url . '";</script>';
+        }
+        else {
+            // Redirect using PHP.
+            header('Location: ' . $url);
+        }
+
+        $this->exitAfterHook();
     }
 
     /**
