@@ -251,6 +251,22 @@ class ExternalModule extends AbstractExternalModule {
     }
 
     /**
+     * Loads auto-lock feature.
+     */
+    protected function loadAutoLock() {
+      global $user_rights;
+      global $Proj;
+
+      //get list of roles to enforce auto-locking on
+      $roles_to_lock = $this->getProjectSetting("auto-locked-roles", $Proj->project_id);
+
+      //load auto-lock script if user is in an auto-locked role
+      if (in_array($user_rights["role_id"], $roles_to_lock)) {
+        $this->includeJs("js/auto-lock.js");
+      }
+    }
+
+    /**
      * Redirects user to the given URL.
      *
      * This function basically replicates redirect() function, but since EM
