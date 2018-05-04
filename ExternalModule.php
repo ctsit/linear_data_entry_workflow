@@ -56,6 +56,7 @@ class ExternalModule extends AbstractExternalModule {
 
         if ($this->loadRFIO('data_entry_form', $Proj->eventInfo[$event_id]['arm_num'], $record, $event_id, $instrument)) {
             $this->loadFDEC($instrument);
+            $this->loadAutoLock();
         }
     }
 
