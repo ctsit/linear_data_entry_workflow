@@ -1,0 +1,3 @@
+document.addEventListener('DOMContentLoaded', function() {
+  //TODO: write auto-locking script...
+});
