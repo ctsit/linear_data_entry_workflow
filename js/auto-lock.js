@@ -8,5 +8,6 @@ document.addEventListener('DOMContentLoaded', function() {
     $unlockBtn.hide();
   } else {
     $lockRecordRow.hide();
+    $lockRecordCheckBox.prop('checked', true);
   }
 });
