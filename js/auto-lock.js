@@ -1,3 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
-  //TODO: write auto-locking script...
+
+  var $lockRecordRow = $('#__LOCKRECORD__-tr');
+  var $lockRecordCheckBox = $('#__LOCKRECORD__');
+
+  if($lockRecordCheckBox.is(":checked")) {
+    $unlockBtn = $('input[value="Unlock form"]');
+    $unlockBtn.hide();
+  } else {
+    $lockRecordRow.hide();
+  }
 });
