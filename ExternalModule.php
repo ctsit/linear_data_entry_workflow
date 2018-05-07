@@ -56,6 +56,7 @@ class ExternalModule extends AbstractExternalModule {
 
         if ($this->loadRFIO('data_entry_form', $Proj->eventInfo[$event_id]['arm_num'], $record, $event_id, $instrument)) {
             $this->loadFDEC($instrument);
+            $this->loadAutoLock();
         }
     }
 
@@ -248,6 +249,22 @@ class ExternalModule extends AbstractExternalModule {
 
         $this->setJsSetting('fdec', $settings);
         $this->includeJs('js/fdec.js');
+    }
+
+    /**
+     * Loads auto-lock feature.
+     */
+    protected function loadAutoLock() {
+      global $user_rights;
+      global $Proj;
+
+      //get list of roles to enforce auto-locking on
+      $roles_to_lock = $this->getProjectSetting("auto-locked-roles", $Proj->project_id);
+
+      //load auto-lock script if user is in an auto-locked role
+      if (in_array($user_rights["role_id"], $roles_to_lock)) {
+        $this->includeJs("js/auto-lock.js");
+      }
     }
 
     /**

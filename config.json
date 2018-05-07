@@ -61,6 +61,12 @@
             "repeatable": true
         },
         {
+          "key": "auto-locked-roles",
+          "name": "auto-locked roles",
+          "type": "user-role-list",
+          "repeatable": true
+        },
+        {
             "key": "hide-next-record-button",
             "name": "Hide \"Save & Go To Next Record\" button",
             "type": "checkbox"
