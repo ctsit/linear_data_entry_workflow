@@ -8,6 +8,13 @@ document.addEventListener('DOMContentLoaded', function() {
     $unlockBtn.hide();
   } else {
     $lockRecordRow.hide();
-    $lockRecordCheckBox.prop('checked', true);
+    $formCompleteDropdown = $('select[name$="_complete"]');
+    $formCompleteDropdown.change(function(event) {
+      if($formCompleteDropdown.val() == "2") {
+        $lockRecordCheckBox.prop('checked', true);
+      } else {
+        $lockRecordCheckBox.prop('checked', false);
+      }
+    });
   }
 });
