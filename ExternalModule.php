@@ -56,7 +56,7 @@ class ExternalModule extends AbstractExternalModule {
 
         if ($this->loadRFIO('data_entry_form', $Proj->eventInfo[$event_id]['arm_num'], $record, $event_id, $instrument)) {
             $this->loadFDEC($instrument);
-            $this->loadAutoLock();
+            $this->loadAutoLock($instrument);
         }
     }
 
@@ -254,9 +254,19 @@ class ExternalModule extends AbstractExternalModule {
     /**
      * Loads auto-lock feature.
      */
-    protected function loadAutoLock() {
+    protected function loadAutoLock($instrument) {
       global $user_rights;
       global $Proj;
+
+      //get list of exceptions
+      if (!$exceptions = $this->getProjectSetting('forms-exceptions', $Proj->project_id)) {
+          $exceptions = array();
+      }
+
+      //if current form is in the exception list then disable auto-locking
+      if (in_array($instrument, $exceptions)) {
+        return;
+      }
 
       //get list of roles to enforce auto-locking on
       $roles_to_lock = $this->getProjectSetting("auto-locked-roles", $Proj->project_id);
