@@ -2,6 +2,11 @@
 All notable changes to the REDCap Linear Data Entry Workflow module will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.3.0] - 2018-05-22
+### Added
+- Allow autolocking of completed forms for specified roles (Dileep)
+
+
 ## [2.2.0] - 2018-05-03
 ### Changed
 - Preventing false alarms/errors on redirect. (Tiago Bember Simeao)
