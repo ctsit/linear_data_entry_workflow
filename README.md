@@ -43,7 +43,9 @@ For example, if the field 'Age' requires a number from 0 to 99 and the user ente
 
 
 ### Adding exceptions
-Linear Data Entry Workflow can be configured to ignore certain forms. To do that, access **Manage External Modules** section of your project, click on Linear Data Entry Workflow's configure button, and fill **Forms Exceptions** field.
+Linear Data Entry Workflow can be configured to ignore certain forms. To do that, access **Manage External Modules** section of your project, click on Linear Data Entry Workflow's configurtion button, and fill **Forms Exceptions** field.
+
+![Form exceptions](img/exceptions.png)
 
 
 ### Suppressing "Save & Go To Next Record"
@@ -51,5 +53,9 @@ Linear Data Entry Workflow can be configured to ignore certain forms. To do that
 In a clinical data collection workflow the study coordinator is likely working with only one research participant at a time. In this case the "Save & Go To Next Record" button might be a distraction. This button can be hidden via the modules project-level configuration option _Hide "Save & Go To Next Record" button_
 
 
-### auto-locking forms
-Linear Data Entry Workflow can be configured to automatically lock forms upon completion for certain user roles. These roles will not have the ability to unlock these forms on their own. For this feature to work properly the role must have Lock/Unlock privileges. This can be configured in the **User Rights** page. To activate this feature access **Manage External Modules** section of your project, click on Linear Data Entry Workflow's configure button, and select a role to activate auto-locking on. Please note that this feature does not affect REDCap administrators, regardless of what role they are in.
+### Auto-locking forms
+Linear Data Entry Workflow can be configured to automatically lock forms upon completion for certain user roles. These roles will not have the ability to unlock these forms on their own. For this feature to work properly the role must have Lock/Unlock privileges.
+
+This can be configured in the **User Rights** page. To activate this feature access **Manage External Modules** section of your project, click on Linear Data Entry Workflow's configure button, and select a role to activate auto-locking on. Please note that this feature does not affect REDCap administrators, regardless of what role they are in.
+
+![Auto-locking](img/auto_lock.png)
