@@ -67,6 +67,12 @@
           "repeatable": true
         },
         {
+            "key": "force-linear-events-worflow",
+            "name": "Force linear workflow of events",
+            "default": true,
+            "type": "checkbox"
+        },
+        {
             "key": "hide-next-record-button",
             "name": "Hide \"Save & Go To Next Record\" button",
             "type": "checkbox"

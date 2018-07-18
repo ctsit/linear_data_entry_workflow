@@ -2,6 +2,11 @@
 All notable changes to the REDCap Linear Data Entry Workflow module will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.4.0] - 2018-07-19
+### Added
+- Added option "Force linear workflow of events" (tbembersimeao)
+
+
 ## [2.3.0] - 2018-05-22
 ### Added
 - Allow autolocking of completed forms for specified roles (Dileep)
