@@ -4,7 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.4.0] - 2018-07-19
 ### Added
-- Added option "Force linear workflow of events" (tbembersimeao)
+- Added option "Allow events to be filled out independently from each other" (tbembersimeao)
 
 
 ## [2.3.0] - 2018-05-22

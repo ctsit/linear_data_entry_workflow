@@ -31,9 +31,9 @@ This feature changes REDCap's behavior on 3 pages:
 2. **Record Home**. Performs much the same function as described above, but on an individual record's home page. This means that each event is evaluated separately, and the form immediately ensuing the last complete form is the last accessible form.
 3. **Data Entry Form**. Prevents users from using the left hand sidebar links to navigate to forms that should be inaccessible.
 
-**\*\*\*** If this assumption is false for your project, access **Manage External Modules** section of your project, click on Linear Data Entry Workflow's configurtion button, and uncheck "Force linear workflow of events" (see image below).
+**\*\*\*** If this assumption is false for your project, access **Manage External Modules** section of your project, click on Linear Data Entry Workflow's configurtion button, and check "Allow events to be filled out independently from each other" (see image below).
 
-![Force linear event workflow](img/force_linear_events_workflow.png)
+![Allow independent events](img/allow_independent_events.png)
 
 ### Force Data Entry Constraints (FDEC)
 

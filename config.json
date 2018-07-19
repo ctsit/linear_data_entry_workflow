@@ -67,9 +67,8 @@
           "repeatable": true
         },
         {
-            "key": "force-linear-events-worflow",
-            "name": "Force linear workflow of events",
-            "default": true,
+            "key": "allow-independent-events",
+            "name": "Allow events to be filled out independently from each other",
             "type": "checkbox"
         },
         {

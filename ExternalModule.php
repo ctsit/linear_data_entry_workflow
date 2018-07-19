@@ -109,7 +109,7 @@ class ExternalModule extends AbstractExternalModule {
             $frsl_forms_access = $frsl->getFormsAccessMatrix($arm, $record);
         }
 
-        $force_linear_events = $this->getProjectSetting('force-linear-events-worflow');
+        $independent_events_allowed = $this->getProjectSetting('allow-independent-events');
 
         // Building forms access matrix.
         $forms_access = array();
@@ -158,7 +158,7 @@ class ExternalModule extends AbstractExternalModule {
                     }
                 }
 
-                if (!$force_linear_events) {
+                if ($independent_events_allowed) {
                     $prev_form_completed = true;
                 }
             }
