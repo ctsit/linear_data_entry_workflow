@@ -1,6 +1,6 @@
 # Linear Data Entry Workflow
 
-This module forces a linear data entry workflow across REDCap forms and events. The linear workflow is enforced by removing access to any form which does not immediately follow the last completed form. In this way, if a user has not filled out the first form, they cannot proceed to the second (or and subsequent) form. This module can be configured at the project level to exclude some forms from these rules.
+This module forces a linear data entry workflow across REDCap forms and events. The linear workflow is enforced by removing access to any form which does not immediately follow the last completed form. In this way, if a user has not filled out the first form, he cannot proceed to the second (or/and subsequent) form. This module can be configured at the project level to exclude some forms from these rules.
 
 
 ## Prerequisites
@@ -31,7 +31,7 @@ This feature changes REDCap's behavior on 3 pages:
 2. **Record Home**. Performs much the same function as described above, but on an individual record's home page. This means that each event is evaluated separately, and the form immediately ensuing the last complete form is the last accessible form.
 3. **Data Entry Form**. Prevents users from using the left hand sidebar links to navigate to forms that should be inaccessible.
 
-**\*\*\*** If this assumption is false for your project, access **Manage External Modules** section of your project, click on Linear Data Entry Workflow's configurtion button, and check "Allow events to be filled out independently from each other" (see image below).
+**\*\*\*** If this assumption is false for your project, access **Manage External Modules** section of your project, click on Linear Data Entry Workflow's configuration button, and check "Allow events to be filled out independently from each other" (see image below).
 
 ![Allow independent events](img/allow_independent_events.png)
 
