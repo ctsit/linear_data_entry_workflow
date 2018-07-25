@@ -109,6 +109,8 @@ class ExternalModule extends AbstractExternalModule {
             $frsl_forms_access = $frsl->getFormsAccessMatrix($arm, $record);
         }
 
+        $independent_events_allowed = $this->getProjectSetting('allow-independent-events');
+
         // Building forms access matrix.
         $forms_access = array();
         foreach ($completed_forms as $id => $data) {
@@ -154,6 +156,10 @@ class ExternalModule extends AbstractExternalModule {
                             break;
                         }
                     }
+                }
+
+                if ($independent_events_allowed) {
+                    $prev_form_completed = true;
                 }
             }
         }
