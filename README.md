@@ -4,11 +4,11 @@ This module forces a linear data entry workflow across REDCap forms and events. 
 
 
 ## Prerequisites
-- REDCap >= 8.0.3 (for versions < 8.0.3, [REDCap Modules](https://github.com/vanderbilt/redcap-external-modules) is required).
+- REDCap >= 8.0.3
 
 
 ## Easy Installation
-- Obtain this module from the Consortium [REDCap Repo] (https://redcap.vanderbilt.edu/consortium/modules/index.php) from the control center.
+- Obtain this module from the Consortium [REDCap Repo](https://redcap.vanderbilt.edu/consortium/modules/index.php) from the control center.
 
 
 ## Manual Installation
@@ -27,7 +27,7 @@ For example, if you have 3 forms, X, Y, and Z - in that order, and only form X h
 
 This feature changes REDCap's behavior on 3 pages:
 
-1. **Record Status Dashboard**. Ensures the record status dashboard only reveals forms that should be accessible. It goes through each record, and disables links to all forms that are not complete or immediately following a complete form. If there are multiple events, forms are evaluated one event at a time, with the assumption**\*\*\*** that each event must be completed before any forms on the next event can be accessed. Continuing with the above example: if forms X, Y, and Z are designated for both a January and February event, January's form Z must be complete before the user can fill out February X.
+1. **Record Status Dashboard**. Ensures the record status dashboard only reveals forms that should be accessible. It goes through each record, and disables links to all forms that are not complete or immediately following a complete form. If there are multiple events, forms are evaluated one event at a time, with the assumption **\*\*\*** that each event must be completed before any forms on the next event can be accessed. Continuing with the above example: if forms X, Y, and Z are designated for both a January and February event, January's form Z must be complete before the user can fill out February X.
 2. **Record Home**. Performs much the same function as described above, but on an individual record's home page. This means that each event is evaluated separately, and the form immediately ensuing the last complete form is the last accessible form.
 3. **Data Entry Form**. Prevents users from using the left hand sidebar links to navigate to forms that should be inaccessible.
 
