@@ -67,6 +67,11 @@
           "repeatable": true
         },
         {
+            "key": "allow-independent-events",
+            "name": "Allow events to be filled out independently from each other",
+            "type": "checkbox"
+        },
+        {
             "key": "hide-next-record-button",
             "name": "Hide \"Save & Go To Next Record\" button",
             "type": "checkbox"
