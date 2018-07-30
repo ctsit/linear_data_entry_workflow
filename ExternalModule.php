@@ -102,11 +102,8 @@ class ExternalModule extends AbstractExternalModule {
         }
 
         // Handling possible conflicts with CTSIT's Form Render Skip Logic.
-        $prefix = 'form_render_skip_logic';
-        $enabled_modules = ExternalModules::getEnabledModules($Proj->project_id);
-        if (isset($enabled_modules[$prefix])) {
-            $frsl = ExternalModules::getModuleInstance($prefix, $enabled_modules[$prefix]);
-            $frsl_forms_access = $frsl->getFormsAccessMatrix($arm, $record);
+        if (defined('FORM_RENDER_SKIP_LOGIC_PREFIX')) {
+            $frsl_forms_access = ExternalModules::getModuleInstance(FORM_RENDER_SKIP_LOGIC_PREFIX)->getFormsAccessMatrix($event_id, $record);
         }
 
         $independent_events_allowed = $this->getProjectSetting('allow-independent-events');
