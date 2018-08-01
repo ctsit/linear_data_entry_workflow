@@ -8,6 +8,7 @@ namespace LinearDataEntryWorkflow\ExternalModule;
 
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
+use Records;
 use REDCap;
 
 /**
@@ -85,84 +86,78 @@ class ExternalModule extends AbstractExternalModule {
         // Proj is a REDCap var used to pass information about the current project.
         global $Proj;
 
-        // Use form names to contruct complete_status field names.
-        $fields = array();
-        foreach (array_keys($Proj->forms) as $form_name) {
-            $fields[$form_name] = $form_name . '_complete';
-        }
-
-        $completed_forms = REDCap::getData($Proj->project_id, 'array', $record, $fields);
-        if ($record && !isset($completed_forms[$record])) {
-            // Handling new record case.
-            $completed_forms = array($record => array());
+        $forms_status = Records::getFormStatus($Proj->project_id, $record ? array($record) : null);
+        if ($record && !isset($forms_status[$record])) {
+            // TODO.
+            $forms_status = array($record => array());
         }
 
         if (!$exceptions = $this->getProjectSetting('forms-exceptions', $Proj->project_id)) {
             $exceptions = array();
         }
 
-        // Handling possible conflicts with CTSIT's Form Render Skip Logic.
-        if (defined('FORM_RENDER_SKIP_LOGIC_PREFIX')) {
-            $frsl_forms_access = ExternalModules::getModuleInstance(FORM_RENDER_SKIP_LOGIC_PREFIX)->getFormsAccessMatrix($event_id, $record);
-        }
-
         $independent_events_allowed = $this->getProjectSetting('allow-independent-events');
 
-        // Building forms access matrix.
-        $forms_access = array();
-        foreach ($completed_forms as $id => $data) {
-            $forms_access[$id] = array();
-            $prev_form_completed = true;
+        $prev_event = '';
+        $prev_form = '';
 
-            foreach (array_keys($Proj->events[$arm]['events']) as $event) {
-                $forms_access[$id][$event] = array();
+        // Getting denied forms.
+        $denied_forms = array();
+        foreach ($forms_status as $id => $data) {
+            $denied_forms[$id] = array();
 
-                foreach ($Proj->eventsForms[$event] as $form) {
-                    $forms_access[$id][$event][$form] = true;
+            foreach (array_reverse($data, true) as $event => $event_forms) {
+                $denied_forms[$id][$event] = array();
 
+                $event_forms = array_reverse($event_forms, true);
+                if ($independent_events_allowed) {
+                    $event_forms['__aux_form'] = array(2);
+                }
+
+                foreach ($event_forms as $form => $form_status) {
                     if (in_array($form, $exceptions)) {
                         continue;
                     }
 
-                    if (isset($frsl_forms_access) && !$frsl_forms_access[$id][$event][$form]) {
-                        continue;
-                    }
+                    if (!empty($form_status)) {
+                        $complete = true;
 
-                    if (!$prev_form_completed) {
-                        if ($id == $record && $event == $event_id && $instrument == $form) {
-                            // Access denied to the current page.
-                            $this->redirect(APP_PATH_WEBROOT . 'DataEntry/record_home.php?pid=' . $Proj->project_id . '&id=' . $record . '&arm=' . $arm);
-                            return false;
+                        foreach ($form_status as $instance_status) {
+                            if ($instance_status != 2) {
+                                $complete = false;
+                                break;
+                            }
                         }
 
-                        $forms_access[$id][$event][$form] = false;
-                        continue;
-                    }
-
-                    if (empty($data['repeat_instances'][$event][$form])) {
-                        $prev_form_completed = !empty($data[$event][$fields[$form]]) && $data[$event][$fields[$form]] == 2;
-                        continue;
-                    }
-
-                    // Repeat instances case.
-                    foreach ($data['repeat_instances'][$event][$form] as $instance) {
-                        if (empty($instance[$fields[$form]]) || $instance[$fields[$form]] != 2) {
-                            // Block access to next instrument if an instance is
-                            // not completed.
-                            $prev_form_completed = false;
-                            break;
+                        if ($complete) {
+                            // Since this form is complete, let's rollback the
+                            // access block to the next form.
+                            unset($denied_forms[$id][$prev_event][$prev_form]);
                         }
+
+                        break;
                     }
+
+                    $denied_forms[$id][$event][$form] = $form;
+
+                    $prev_event = $event;
+                    $prev_form = $form;
                 }
 
-                if ($independent_events_allowed) {
-                    $prev_form_completed = true;
+                if (!$independent_events_allowed && !isset($denied_forms[$id][$prev_event][$prev_form])) {
+                    break;
                 }
             }
         }
 
+        if (isset($denied_forms[$record][$event_id][$instrument])) {
+            // Access denied to the current page.
+            $this->redirect(APP_PATH_WEBROOT . 'DataEntry/record_home.php?pid=' . $Proj->project_id . '&id=' . $record . '&arm=' . $arm);
+            return false;
+        }
+
         $settings = array(
-            'formsAccess' => $forms_access,
+            'deniedForms' => $denied_forms,
             'location' => $location,
             'instrument' => $instrument,
             'isException' => in_array($instrument, $exceptions),

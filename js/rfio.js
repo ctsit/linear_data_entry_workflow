@@ -37,7 +37,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         var params = getQueryParameters(this.href);
-        if (!settings.formsAccess[params.id][params.event_id][params.page]) {
+
+        if (typeof settings.deniedForms[params.id][params.event_id] === 'undefined') {
+            return;
+        }
+
+        if (typeof settings.deniedForms[params.id][params.event_id][params.page] !== 'undefined') {
             disableForm(this);
         }
     });
