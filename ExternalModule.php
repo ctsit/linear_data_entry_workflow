@@ -87,16 +87,36 @@ class ExternalModule extends AbstractExternalModule {
         global $Proj;
 
         $forms_status = Records::getFormStatus($Proj->project_id, $record ? array($record) : null);
-        if ($record && !isset($forms_status[$record])) {
-            // TODO.
-            $forms_status = array($record => array());
+
+        if ($independent_events_allowed = $this->getProjectSetting('allow-independent-events')) {
+            foreach ($forms_status as $id => $data) {
+                foreach (array_keys($data) as $event) {
+                    // Appending fake "completed" forms to the beggining of list
+                    // to make sure at least the first form will be displayed.
+                    $forms_status[$id][$event] = array('___ldew_aux_form' => array(2)) + $forms_status[$id][$event];
+                }
+            }
+        }
+        else {
+            reset($Proj->eventsForms);
+            $event = key($Proj->eventsForms);
+
+            foreach (array_keys($forms_status) as $id) {
+                // Appending fake "completed" forms to the beggining of list
+                // to make sure at least the first form will be displayed.
+                $forms_status[$id][$event] = array('___ldew_aux_form' => array(2)) + $forms_status[$id][$event];
+            }
         }
 
         if (!$exceptions = $this->getProjectSetting('forms-exceptions', $Proj->project_id)) {
             $exceptions = array();
         }
 
-        $independent_events_allowed = $this->getProjectSetting('allow-independent-events');
+        // Handling possible conflicts with CTSIT's Form Render Skip Logic.
+        $frsl = array();
+        if (defined('FORM_RENDER_SKIP_LOGIC_PREFIX')) {
+            $frsl = ExternalModules::getModuleInstance(FORM_RENDER_SKIP_LOGIC_PREFIX)->getFormsAccessMatrix($event_id, $record);
+        }
 
         $prev_event = '';
         $prev_form = '';
@@ -109,13 +129,14 @@ class ExternalModule extends AbstractExternalModule {
             foreach (array_reverse($data, true) as $event => $event_forms) {
                 $denied_forms[$id][$event] = array();
 
-                $event_forms = array_reverse($event_forms, true);
-                if ($independent_events_allowed) {
-                    $event_forms['__aux_form'] = array(2);
-                }
-
-                foreach ($event_forms as $form => $form_status) {
+                foreach (array_reverse($event_forms, true) as $form => $form_status) {
                     if (in_array($form, $exceptions)) {
+                        // Skip exception forms.
+                        continue;
+                    }
+
+                    if (isset($frsl[$id][$event][$form]) && !$frsl[$id][$event][$form]) {
+                        // Skip FRSL hidden forms.
                         continue;
                     }
 
@@ -144,13 +165,17 @@ class ExternalModule extends AbstractExternalModule {
                     $prev_form = $form;
                 }
 
-                if (!$independent_events_allowed && !isset($denied_forms[$id][$prev_event][$prev_form])) {
+                if ($independent_events_allowed) {
+                    $prev_event = '';
+                    $prev_form = '';
+                }
+                elseif (!isset($denied_forms[$id][$prev_event][$prev_form])) {
                     break;
                 }
             }
         }
 
-        if (isset($denied_forms[$record][$event_id][$instrument])) {
+        if ($record && $event_id && isset($denied_forms[$record][$event_id][$instrument])) {
             // Access denied to the current page.
             $this->redirect(APP_PATH_WEBROOT . 'DataEntry/record_home.php?pid=' . $Proj->project_id . '&id=' . $record . '&arm=' . $arm);
             return false;
