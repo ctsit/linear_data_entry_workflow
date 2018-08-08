@@ -2,6 +2,13 @@
 All notable changes to the REDCap Linear Data Entry Workflow module will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.5.0] - 2018-08-08
+### Added
+- Add support for FRSL 3.2.0's event-relative control fields (Tiago Bember Simeao)
+- Find last completed form looking backward from the end instead of forward from the beginning (Tiago Bember Simeao)
+- Add Zenodo DOI to README (Philip Chase)
+
+
 ## [2.4.0] - 2018-07-19
 ### Added
 - Added option "Allow events to be filled out independently from each other" (tbembersimeao)

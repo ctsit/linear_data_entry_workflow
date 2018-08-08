@@ -1,6 +1,8 @@
 # Linear Data Entry Workflow
 
-This module forces a linear data entry workflow across REDCap forms and events. The linear workflow is enforced by removing access to any form which does not immediately follow the last completed form. In this way, if a user has not filled out the first form, he cannot proceed to the second (or/and subsequent) form. This module can be configured at the project level to exclude some forms from these rules.
+[![DOI](https://zenodo.org/badge/98140398.svg)](https://zenodo.org/badge/latestdoi/98140398)
+
+This module forces a linear data entry workflow across REDCap forms and events. The linear workflow is enforced by removing access to any form which does not immediately follow the last completed form. In this way, if a user has not filled out the first form, she cannot proceed to the second (or/and subsequent) form. This module can be configured at the project level to exclude some forms from these rules and make each event independent from the others.
 
 
 ## Prerequisites
