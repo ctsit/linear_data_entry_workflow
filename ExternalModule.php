@@ -86,7 +86,10 @@ class ExternalModule extends AbstractExternalModule {
         // Proj is a REDCap var used to pass information about the current project.
         global $Proj;
 
-        $forms_status = Records::getFormStatus($Proj->project_id, $record ? array($record) : null);
+        $records = $record ? array($record) : Records::getRecordList($Proj->project_id);
+        $events = $event_id ? array($event_id => $Proj->eventsForms[$event_id]) : array();
+
+        $forms_status = Records::getFormStatus($Proj->project_id, $records, $arm, null, $events);
 
         if ($independent_events_allowed = $this->getProjectSetting('allow-independent-events')) {
             foreach ($forms_status as $id => $data) {

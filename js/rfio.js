@@ -38,11 +38,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         var params = getQueryParameters(this.href);
 
-        if (typeof settings.deniedForms[params.id][params.event_id] === 'undefined') {
-            return;
-        }
-
-        if (typeof settings.deniedForms[params.id][params.event_id][params.page] !== 'undefined') {
+        if (
+            typeof settings.deniedForms[params.id] !== 'undefined' &&
+            typeof settings.deniedForms[params.id][params.event_id] !== 'undefined' &&
+            typeof settings.deniedForms[params.id][params.event_id][params.page] !== 'undefined'
+        ) {
             disableForm(this);
         }
     });
