@@ -102,12 +102,14 @@ class ExternalModule extends AbstractExternalModule {
         }
         else {
             reset($Proj->eventsForms);
-            $event = key($Proj->eventsForms);
+            $first_event = key($Proj->eventsForms);
 
-            foreach (array_keys($forms_status) as $id) {
-                // Appending fake "completed" forms to the beggining of list
-                // to make sure at least the first form will be displayed.
-                $forms_status[$id][$event] = array('___ldew_aux_form' => array(2)) + $forms_status[$id][$event];
+            if (!$event_id || $event_id == $first_event) {
+                foreach (array_keys($forms_status) as $id) {
+                    // Appending fake "completed" forms to the beggining of list
+                    // to make sure at least the first form will be displayed.
+                    $forms_status[$id][$first_event] = array('___ldew_aux_form' => array(2)) + $forms_status[$id][$first_event];
+                }
             }
         }
 
