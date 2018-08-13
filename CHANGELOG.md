@@ -2,6 +2,11 @@
 All notable changes to the REDCap Linear Data Entry Workflow module will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.5.1] - 2018-08-13
+### Changed
+- Fixing regression for non-independent events. (Tiago Bember Simeao)
+
+
 ## [2.5.0] - 2018-08-08
 ### Added
 - Add support for FRSL 3.2.0's event-relative control fields (Tiago Bember Simeao)
