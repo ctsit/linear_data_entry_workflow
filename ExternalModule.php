@@ -87,9 +87,7 @@ class ExternalModule extends AbstractExternalModule {
         global $Proj;
 
         $records = $record ? array($record) : Records::getRecordList($Proj->project_id);
-        $events = $event_id ? array($event_id => $Proj->eventsForms[$event_id]) : array();
-
-        $forms_status = Records::getFormStatus($Proj->project_id, $records, $arm, null, $events);
+        $forms_status = Records::getFormStatus($Proj->project_id, $records, $arm);
 
         if ($independent_events_allowed = $this->getProjectSetting('allow-independent-events')) {
             foreach ($forms_status as $id => $data) {
@@ -102,12 +100,12 @@ class ExternalModule extends AbstractExternalModule {
         }
         else {
             reset($Proj->eventsForms);
-            $event = key($Proj->eventsForms);
+            $first_event = key($Proj->eventsForms);
 
             foreach (array_keys($forms_status) as $id) {
                 // Appending fake "completed" forms to the beggining of list
                 // to make sure at least the first form will be displayed.
-                $forms_status[$id][$event] = array('___ldew_aux_form' => array(2)) + $forms_status[$id][$event];
+                $forms_status[$id][$first_event] = array('___ldew_aux_form' => array(2)) + $forms_status[$id][$first_event];
             }
         }
 
