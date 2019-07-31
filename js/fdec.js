@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
      */
     function formValidate(elements_validate, required_fields_selector = '', statuses_bypass = [], display_popup = true) {
         // Checking if current form status can bypass validation.
-        if ( (statuses_bypass.length && statuses_bypass.includes($formStatus.val()))) {
+        if (statuses_bypass.length && statuses_bypass.includes($formStatus.val())) {
             return true;
         }
 
