@@ -52,7 +52,11 @@ Linear Data Entry Workflow can be configured to ignore certain forms. To do that
 
 ### Suppressing "Save & Go To Next Record"
 
-In a clinical data collection workflow the study coordinator is likely working with only one research participant at a time. In this case the "Save & Go To Next Record" button might be a distraction. This button can be hidden via the modules project-level configuration option _Hide "Save & Go To Next Record" button_
+In a clinical data collection workflow the study coordinator is likely working with only one research participant at a time. In this case the "Save & Go To Next Record" button might be a distraction. This button can be hidden via the modules project-level configuration option _Hide "Save & Go To Next Record" button_. There are 3 options:
+
+* **Never**: The button will never be hidden.
+* **Everywhere but Excepted Forms**: The button will be hidden on all forms unless included under **Forms Exceptions**.
+* **Always**: The button will always be hidden, even on forms included under **Forms Exceptions**.
 
 
 ### Auto-locking forms
