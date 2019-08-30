@@ -51,6 +51,11 @@
             "name": "Carl J Pepine, M.D., MACC",
             "email": "",
             "institution": "University of Florida"
+        },
+        {
+            "name": "Kyle Chesney",
+            "email": "kyle.chesney@ufl.edu",
+            "institution": "University of Florida"
         }
     ],
     "project-settings": [
@@ -74,7 +79,21 @@
         {
             "key": "hide-next-record-button",
             "name": "Hide \"Save & Go To Next Record\" button",
-            "type": "checkbox"
+            "type": "radio",
+            "choices": [
+                {
+                    "name": "Never",
+                    "value": 0
+                },
+                {
+                    "name": "Everywhere but Excepted Forms",
+                    "value": 1
+                },
+                {
+                    "name": "Always",
+                    "value": 2
+                }
+            ]
         }
     ],
     "compatibility": {
