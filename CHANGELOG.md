@@ -2,6 +2,15 @@
 All notable changes to the REDCap Linear Data Entry Workflow module will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+
+## [2.5.2] - 2019-09-01
+### Changed
+- document config changes in README (Kyle Chesney)
+- introduce option to always hide next record button hide-next-record-button is now radio instead of checkbox (Kyle Chesney)
+- remove additional parens from logic eval (Kyle Chesney)
+- warn user, disable complete option with bad data reenables option once data meets standards (Kyle Chesney)
+
+
 ## [2.5.1] - 2018-08-13
 ### Changed
 - Fixing regression for non-independent events. (Tiago Bember Simeao)

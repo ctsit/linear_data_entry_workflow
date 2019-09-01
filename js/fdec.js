@@ -14,29 +14,46 @@ document.addEventListener('DOMContentLoaded', function() {
     // Overriding submit callbacks according to our needs.
     overrideSubmitCallbacks();
 
+    var warned = false;
     $formStatus.change(function() {
         if (!settings.statusesBypass.includes($formStatus.val())) {
             // Submit callbacks need to be overriden if form status changes.
             overrideSubmitCallbacks();
+
+            var failed = !formValidate(true, settings.requiredFieldsSelector, statuses_bypass = [], display_popup = true);
+            $(this).children('option[value="2"]').prop('disabled', failed); // disable the complete option
+
+            if (failed) {
+                warned = true;
+                $(this).val(0); // TODO: what if value 0 is not bypassed?
+            }
         }
+    });
+
+    // evaluate on dropdown selection
+    $formStatus.focus(function() {
+            if (warned) {
+                var failed = !formValidate(true, settings.requiredFieldsSelector, statuses_bypass = [], display_popup = false);
+                $(this).children('option[value="2"]').prop('disabled', failed);
+            }
     });
 
     /**
      * Form validation callback.
      */
-    function formValidate(elements_validate, required_fields_selector = '', statuses_bypass = []) {
+    function formValidate(elements_validate, required_fields_selector = '', statuses_bypass = [], display_popup = true) {
         // Checking if current form status can bypass validation.
         if (statuses_bypass.length && statuses_bypass.includes($formStatus.val())) {
             return true;
         }
 
         // Checking for inconsistent data.
-        if (elements_validate && !fieldsConsistencyValidate()) {
+        if (elements_validate && !fieldsConsistencyValidate(display_popup)) {
             return false;
         }
 
         // Checking for empty required fields.
-        if (required_fields_selector && !requiredFieldsValidate(required_fields_selector)) {
+        if (required_fields_selector && !requiredFieldsValidate(required_fields_selector, display_popup)) {
             return false;
         }
 
@@ -46,13 +63,15 @@ document.addEventListener('DOMContentLoaded', function() {
     /**
      * Function that checks whether fields values are consistent.
      */
-    function fieldsConsistencyValidate() {
+    function fieldsConsistencyValidate(display_popup = true) {
         var validated = true;
 
         // Running the validation callback of each form element (e.g. checking for numbers out of range).
         $('#questiontable input:visible, #questiontable select:visible').each(function() {
             if (typeof this.onblur === 'function') {
-                this.onblur.call(this);
+                if (display_popup) {
+                    this.onblur.call(this);
+                }
 
                 if ($(this).css('background-color') === FORM_ERROR_COLOR) {
                     // We've got a validation error.
