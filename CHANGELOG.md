@@ -3,6 +3,15 @@ All notable changes to the REDCap Linear Data Entry Workflow module will be docu
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [2.5.3] - 2020-05-05
+### Changed
+- Check if an event is the final event before stopping assigning denied forms (Kyle Chesney)
+- Remove former CTS-IT employees and sponsors from config.json (Philip Chase)
+- Add AUTHORS file (Philip Chase)
+- Add a two-form test project with data (Philip Chase)
+- Address bug causing autolocking of every form with no roles set (Kyle Chesney)
+
+
 ## [2.5.2] - 2019-09-01
 ### Changed
 - document config changes in README (Kyle Chesney)
