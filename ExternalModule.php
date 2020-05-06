@@ -170,7 +170,7 @@ class ExternalModule extends AbstractExternalModule {
                     $prev_event = '';
                     $prev_form = '';
                 }
-                elseif (!isset($denied_forms[$id][$prev_event][$prev_form])) {
+                elseif ( !isset($denied_forms[$id][$prev_event][$prev_form]) && $event != max(array_keys($data)) ) {
                     break;
                 }
             }
@@ -294,6 +294,7 @@ class ExternalModule extends AbstractExternalModule {
 
       //get list of roles to enforce auto-locking on
       $roles_to_lock = $this->getProjectSetting("auto-locked-roles", $Proj->project_id);
+      if (!isset($roles_to_lock[0])) return; // do not autolock if no autolock roles are set
 
       //load auto-lock script if user is in an auto-locked role
       if (in_array($user_rights["role_id"], $roles_to_lock)) {
