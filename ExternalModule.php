@@ -119,13 +119,13 @@ class ExternalModule extends AbstractExternalModule {
             $frsl = ExternalModules::getModuleInstance(FORM_RENDER_SKIP_LOGIC_PREFIX)->getFormsAccessMatrix($event_id, $record);
         }
 
-        $prev_event = '';
-        $prev_form = '';
-
         // Getting denied forms.
         $denied_forms = array();
         foreach ($forms_status as $id => $data) {
             $denied_forms[$id] = array();
+
+            $prev_event = '';
+            $prev_form = '';
 
             foreach (array_reverse($data, true) as $event => $event_forms) {
                 $denied_forms[$id][$event] = array();
