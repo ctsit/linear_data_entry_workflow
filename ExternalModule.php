@@ -170,7 +170,7 @@ class ExternalModule extends AbstractExternalModule {
                     $prev_event = '';
                     $prev_form = '';
                 }
-                elseif ( !isset($denied_forms[$id][$prev_event][$prev_form]) && $event != max(array_keys($data)) ) {
+                elseif ( !isset($denied_forms[$id][$prev_event][$prev_form]) && $prev_event !== '' ) {
                     break;
                 }
             }
