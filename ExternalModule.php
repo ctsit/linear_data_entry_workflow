@@ -87,7 +87,15 @@ class ExternalModule extends AbstractExternalModule {
         global $Proj;
 
         $records = $record ? array($record) : Records::getRecordList($Proj->project_id);
-        $forms_status = Records::getFormStatus($Proj->project_id, $records, $arm);
+
+        if ( !$forms_status = Records::getFormStatus($Proj->project_id, $records, $arm) ) {
+            // Synthesize $forms_status for first record in a DAG
+            $id = $records[0];
+            $forms_status = [$id => $Proj->eventsForms];
+            foreach($forms_status[$id] as $event => $forms) {
+                $forms_status[$id][$event] = array_fill_keys($forms, []);
+            }
+        }
 
         if ($independent_events_allowed = $this->getProjectSetting('allow-independent-events')) {
             foreach ($forms_status as $id => $data) {
