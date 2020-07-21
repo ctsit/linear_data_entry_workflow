@@ -263,7 +263,13 @@ class ExternalModule extends AbstractExternalModule {
             $field_label = filter_tags(label_decode($field_info['element_label']));
             $bullets .= '<div class="req-bullet req-bullet--' . $field_name . '" style="margin-left: 1.5em; text-indent: -1em; display: none;"> &bull; ' . $field_label . '</div>';
 
-            $req_fields_selectors[] = '#questiontable ' . ($field_info['element_type'] == 'select' ? 'select' : 'input') . '[name="' . $field_name . '"]:visible';
+            $selector = '#questiontable ';
+            if ($field_info['element_type'] == 'file') {
+                $selector .= "tr:visible > td > input[name='{$field_name}']:hidden";
+            } else {
+                $selector .= ($field_info['element_type'] == 'select' ? 'select' : 'input') . "[name='{$field_name}']:visible";
+            }
+            $req_fields_selectors[] = $selector;
         }
 
         // Printing required fields popup (hidden yet).
