@@ -87,7 +87,15 @@ class ExternalModule extends AbstractExternalModule {
         global $Proj;
 
         $records = $record ? array($record) : Records::getRecordList($Proj->project_id);
-        $forms_status = Records::getFormStatus($Proj->project_id, $records, $arm);
+
+        if ( !$forms_status = Records::getFormStatus($Proj->project_id, $records, $arm) ) {
+            // Synthesize $forms_status for first record in a DAG
+            $id = $records[0];
+            $forms_status = [$id => $Proj->eventsForms];
+            foreach($forms_status[$id] as $event => $forms) {
+                $forms_status[$id][$event] = array_fill_keys($forms, []);
+            }
+        }
 
         if ($independent_events_allowed = $this->getProjectSetting('allow-independent-events')) {
             foreach ($forms_status as $id => $data) {
@@ -119,13 +127,13 @@ class ExternalModule extends AbstractExternalModule {
             $frsl = ExternalModules::getModuleInstance(FORM_RENDER_SKIP_LOGIC_PREFIX)->getFormsAccessMatrix($event_id, $record);
         }
 
-        $prev_event = '';
-        $prev_form = '';
-
         // Getting denied forms.
         $denied_forms = array();
         foreach ($forms_status as $id => $data) {
             $denied_forms[$id] = array();
+
+            $prev_event = '';
+            $prev_form = '';
 
             foreach (array_reverse($data, true) as $event => $event_forms) {
                 $denied_forms[$id][$event] = array();
@@ -170,7 +178,7 @@ class ExternalModule extends AbstractExternalModule {
                     $prev_event = '';
                     $prev_form = '';
                 }
-                elseif ( !isset($denied_forms[$id][$prev_event][$prev_form]) && $event != max(array_keys($data)) ) {
+                elseif ( !isset($denied_forms[$id][$prev_event][$prev_form]) && $prev_event !== '' ) {
                     break;
                 }
             }
@@ -255,7 +263,13 @@ class ExternalModule extends AbstractExternalModule {
             $field_label = filter_tags(label_decode($field_info['element_label']));
             $bullets .= '<div class="req-bullet req-bullet--' . $field_name . '" style="margin-left: 1.5em; text-indent: -1em; display: none;"> &bull; ' . $field_label . '</div>';
 
-            $req_fields_selectors[] = '#questiontable ' . ($field_info['element_type'] == 'select' ? 'select' : 'input') . '[name="' . $field_name . '"]:visible';
+            $selector = '#questiontable ';
+            if ($field_info['element_type'] == 'file') {
+                $selector .= "tr:visible > td > input[name='{$field_name}']:hidden";
+            } else {
+                $selector .= ($field_info['element_type'] == 'select' ? 'select' : 'input') . "[name='{$field_name}']:visible";
+            }
+            $req_fields_selectors[] = $selector;
         }
 
         // Printing required fields popup (hidden yet).
