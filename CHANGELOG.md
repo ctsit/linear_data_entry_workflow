@@ -3,6 +3,12 @@ All notable changes to the REDCap Linear Data Entry Workflow module will be docu
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [2.6.0] - 2020-07-24
+### Changed
+- adjust to support proper functioning on first record within a DAG (Kyle Chesney)
+- add fdec support for files (inc signatures) works even when fields are subject to branching logic (Kyle Chesney)
+
+
 ## [2.5.3] - 2020-05-05
 ### Changed
 - Check if an event is the final event before stopping assigning denied forms (Kyle Chesney)
