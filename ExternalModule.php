@@ -199,7 +199,7 @@ class ExternalModule extends AbstractExternalModule {
             'hideNextRecordButton' => $this->getProjectSetting('hide-next-record-button', $Proj->project_id),
         );
 
-        if (!$settings['forceButtonsDisplay']) {
+        if (!$settings['forceButtonsDisplay'] && !is_null($event_id)) {
             $i = array_search($instrument, $Proj->eventsForms[$event_id]);
             $next_form = $Proj->eventsForms[$event_id][$i + 1];
 
