@@ -34,11 +34,11 @@ class ExternalModule extends AbstractExternalModule {
                     break;
                 }
 
-                $record = $_GET['id'];
+                $record = $module->escape($_GET['id']);
 
             case 'DataEntry/record_status_dashboard.php':
                 $location = str_replace('.php', '', str_replace('DataEntry/', '', PAGE));
-                $arm = empty($_GET['arm']) ? 1 : $_GET['arm'];
+                $arm = empty($_GET['arm']) ? 1 : $module->escape($_GET['arm']);
 
                 $this->loadRFIO($location, $arm, $record);
                 break;
@@ -52,7 +52,7 @@ class ExternalModule extends AbstractExternalModule {
         global $Proj;
 
         if (!$record) {
-            $record = $_GET['id'];
+            $record = $module->escape($_GET['id']);
         }
 
         if ($this->loadRFIO('data_entry_form', $Proj->eventInfo[$event_id]['arm_num'], $record, $event_id, $instrument)) {
