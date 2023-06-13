@@ -19,7 +19,7 @@ class ExternalModule extends AbstractExternalModule {
     /**
      * @inheritdoc
      */
-    function hook_every_page_top($project_id) {
+    function redcap_every_page_top($project_id) {
         if (!$project_id) {
             return;
         }
@@ -34,11 +34,11 @@ class ExternalModule extends AbstractExternalModule {
                     break;
                 }
 
-                $record = $module->escape($_GET['id']);
+                $record = $this->framework->escape($_GET['id']);
 
             case 'DataEntry/record_status_dashboard.php':
                 $location = str_replace('.php', '', str_replace('DataEntry/', '', PAGE));
-                $arm = empty($_GET['arm']) ? 1 : $module->escape($_GET['arm']);
+                $arm = empty($_GET['arm']) ? 1 : $this->framework->escape($_GET['arm']);
 
                 $this->loadRFIO($location, $arm, $record);
                 break;
@@ -48,11 +48,11 @@ class ExternalModule extends AbstractExternalModule {
     /**
      * @inheritdoc
      */
-    function hook_data_entry_form($project_id, $record = null, $instrument, $event_id, $group_id = null) {
+    function redcap_data_entry_form($project_id, $record = null, $instrument, $event_id, $group_id = null) {
         global $Proj;
 
         if (!$record) {
-            $record = $module->escape($_GET['id']);
+            $record = $this->framework->escape($_GET['id']);
         }
 
         if ($this->loadRFIO('data_entry_form', $Proj->eventInfo[$event_id]['arm_num'], $record, $event_id, $instrument)) {
