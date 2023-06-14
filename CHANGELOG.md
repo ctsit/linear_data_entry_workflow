@@ -3,6 +3,14 @@ All notable changes to the REDCap Linear Data Entry Workflow module will be docu
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [2.6.1] - 2023-06-14
+### Changed
+- Update module to framework version 12 (Kyle Chesney)
+- Escape $_GET params to soothe psalm static analysis (Kyle Chesney)
+- update authors in config to module support listserv (Kyle Chesney)
+- Skip "next form" logic when user is not in an instrument Prevents an error in PHP8+ caused by array_search(null, null) which previously only threw a warning Additionally ensures inaccessible forms have their icons greyed out during new record creation (Kyle Chesney)
+
+
 ## [2.6.0] - 2020-07-24
 ### Changed
 - adjust to support proper functioning on first record within a DAG (Kyle Chesney)
